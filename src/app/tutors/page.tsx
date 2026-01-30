@@ -11,6 +11,7 @@ import { setFilters } from '@/store/slices/tutorSlice';
 
 export default function TutorsPage() {
   const { data, isLoading } = useTutors();
+  console.log('Tutors data:', data);
   const dispatch = useAppDispatch();
   const filters = useAppSelector(state => state.tutor.filters);
 
