@@ -34,8 +34,14 @@ export default function LoginPage() {
         password: data.password,
         callbackURL: '/dashboard',
       });
-      toast.success('Login successful!');
+      if (!res || res.error) {
+         toast.error('Invalid email or password');
+      }
+      if (res.data?.token) {
+        toast.success('Login successful!');
       router.push('/dashboard');
+      }
+      
     } catch (error) {
       toast.error('Invalid email or password');
     } finally {
