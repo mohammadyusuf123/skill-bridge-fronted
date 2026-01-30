@@ -2,7 +2,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ApiResponse } from '@/types';
 
-const BASE_URL ='http://localhost:5000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL 
 
 class ApiClient {
   private client: AxiosInstance;
