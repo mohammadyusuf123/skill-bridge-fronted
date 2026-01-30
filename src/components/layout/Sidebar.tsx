@@ -20,11 +20,11 @@ import { Button } from '@/components/ui/button';
 export default function Sidebar() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const role = session?.user.role;
+  const role = session?.user?.role
 
   const studentLinks = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/tutors', label: 'Find Tutors', icon: Users },
+    { href: '/find-tutors', label: 'Find Tutors', icon: Users },
     { href: '/bookings', label: 'My Bookings', icon: BookOpen },
     { href: '/profile', label: 'Profile', icon: User },
   ];

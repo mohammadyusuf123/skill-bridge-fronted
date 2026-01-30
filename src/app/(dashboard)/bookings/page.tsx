@@ -79,7 +79,7 @@ export default function BookingsPage() {
       <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
         <TabsList>
           <TabsTrigger value="ALL">All ({stats.total})</TabsTrigger>
-          <TabsTrigger value="CONFIRMED">Upcoming ({stats.confirmed})</TabsTrigger>
+          <TabsTrigger value="CONFIRMED">Confirmed ({stats.confirmed})</TabsTrigger>
           <TabsTrigger value="COMPLETED">Completed ({stats.completed})</TabsTrigger>
           <TabsTrigger value="CANCELLED">Cancelled ({stats.cancelled})</TabsTrigger>
         </TabsList>

@@ -3,7 +3,15 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar, Clock, DollarSign, User } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Calendar, Clock, DollarSign, User, MoreVertical, CheckCircle, XCircle } from 'lucide-react';
 import { formatDate, formatTime, formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -26,6 +34,11 @@ export default function BookingCard({ booking, userRole, onCancel, onComplete }:
   const otherUser = userRole === 'STUDENT' ? booking.tutor : booking.student;
   const isPast = new Date(booking.sessionDate) < new Date();
 
+  // Determine what actions are available
+  const canCancel = booking.status === 'CONFIRMED' && onCancel;
+  const canComplete = booking.status === 'CONFIRMED' && onComplete;
+  const hasActions = canCancel || canComplete;
+
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader>
@@ -42,9 +55,36 @@ export default function BookingCard({ booking, userRole, onCancel, onComplete }:
               </p>
             </div>
           </div>
-          <Badge className={statusColors[booking.status]}>
-            {booking.status}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge className={statusColors[booking.status]}>
+              {booking.status}
+            </Badge>
+            {hasActions && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Change Status</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {canComplete && (
+                    <DropdownMenuItem onClick={() => onComplete(booking.id)}>
+                      <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
+                      Mark as Completed
+                    </DropdownMenuItem>
+                  )}
+                  {canCancel && (
+                    <DropdownMenuItem onClick={() => onCancel(booking.id)}>
+                      <XCircle className="mr-2 h-4 w-4 text-red-600" />
+                      Cancel Booking
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </div>
       </CardHeader>
       
@@ -86,25 +126,6 @@ export default function BookingCard({ booking, userRole, onCancel, onComplete }:
         <Link href={`/bookings/${booking.id}`}>
           <Button variant="outline" size="sm">View Details</Button>
         </Link>
-        
-        {booking.status === 'CONFIRMED' && !isPast && onCancel && (
-          <Button 
-            variant="destructive" 
-            size="sm" 
-            onClick={() => onCancel(booking.id)}
-          >
-            Cancel
-          </Button>
-        )}
-        
-        {booking.status === 'CONFIRMED' && userRole === 'TUTOR' && onComplete && (
-          <Button 
-            size="sm" 
-            onClick={() => onComplete(booking.id)}
-          >
-            Mark Complete
-          </Button>
-        )}
 
         {booking.status === 'COMPLETED' && !booking.review && userRole === 'STUDENT' && (
           <Link href={`/bookings/${booking.id}/review`}>
