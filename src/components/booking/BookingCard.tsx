@@ -3,15 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Calendar, Clock, DollarSign, User, MoreVertical, CheckCircle, XCircle } from 'lucide-react';
+import { Calendar, Clock, DollarSign, CheckCircle2, XCircle, Star } from 'lucide-react';
 import { formatDate, formatTime, formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -23,113 +15,104 @@ interface BookingCardProps {
 }
 
 export default function BookingCard({ booking, userRole, onCancel, onComplete }: BookingCardProps) {
-  const statusColors: Record<string, string> = {
-    CONFIRMED: 'bg-blue-500 hover:bg-blue-600',
-    COMPLETED: 'bg-green-500 hover:bg-green-600',
-    CANCELLED: 'bg-red-500 hover:bg-red-600',
-    PENDING: 'bg-yellow-500 hover:bg-yellow-600',
-    NO_SHOW: 'bg-gray-500 hover:bg-gray-600',
+  const statusStyles: Record<string, string> = {
+    CONFIRMED: 'bg-blue-100 text-blue-700 border-blue-200',
+    COMPLETED: 'bg-green-100 text-green-700 border-green-200',
+    CANCELLED: 'bg-red-100 text-red-700 border-red-200',
+    PENDING:   'bg-yellow-100 text-yellow-700 border-yellow-200',
   };
 
   const otherUser = userRole === 'STUDENT' ? booking.tutor : booking.student;
-  const isPast = new Date(booking.sessionDate) < new Date();
 
-  // Determine what actions are available
-  const canCancel = booking.status === 'CONFIRMED' && onCancel;
-  const canComplete = booking.status === 'CONFIRMED' && onComplete;
-  const hasActions = canCancel || canComplete;
+  // Exactly which buttons appear:
+  // PENDING    → show Cancel for student & tutor; show Confirm for tutor
+  // CONFIRMED  → show Cancel for student & tutor; show Complete for tutor
+  // COMPLETED  → show "Leave Review" for student (only if no review yet)
+  // CANCELLED  → no action buttons
+  const isPending   = booking.status === 'PENDING';
+  const isConfirmed = booking.status === 'CONFIRMED';
+  const isCompleted = booking.status === 'COMPLETED';
+  const showCancel   = (isPending || isConfirmed) && onCancel;
+  const showConfirm  = isPending && userRole === 'TUTOR' && onComplete;   // reuse onComplete handler – backend treats confirm same as complete for PENDING
+  const showComplete = isConfirmed && userRole === 'TUTOR' && onComplete;
+  const showReview   = isCompleted && userRole === 'STUDENT' && !booking.review;
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3 flex-1 min-w-0">
-            <Avatar>
+    <Card className="hover:shadow-md transition-shadow flex flex-col">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start gap-3 min-w-0 flex-1">
+            <Avatar className="h-10 w-10 shrink-0">
               <AvatarImage src={otherUser?.image || ''} />
               <AvatarFallback>{otherUser?.name?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0">
               <h3 className="font-semibold truncate">{booking.subject}</h3>
               <p className="text-sm text-muted-foreground truncate">
-                {userRole === 'STUDENT' ? 'with' : 'by'} {otherUser?.name}
+                {userRole === 'STUDENT' ? 'with' : 'by'} {otherUser?.name || '—'}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge className={statusColors[booking.status]}>
-              {booking.status}
-            </Badge>
-            {hasActions && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Change Status</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {canComplete && (
-                    <DropdownMenuItem onClick={() => onComplete(booking.id)}>
-                      <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
-                      Mark as Completed
-                    </DropdownMenuItem>
-                  )}
-                  {canCancel && (
-                    <DropdownMenuItem onClick={() => onCancel(booking.id)}>
-                      <XCircle className="mr-2 h-4 w-4 text-red-600" />
-                      Cancel Booking
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </div>
+          <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full border shrink-0 ${statusStyles[booking.status] || 'bg-gray-100 text-gray-700'}`}>
+            {booking.status}
+          </span>
         </div>
       </CardHeader>
-      
-      <CardContent className="space-y-2">
-        <div className="flex items-center gap-2 text-sm">
-          <Calendar className="h-4 w-4 text-muted-foreground" />
+
+      <CardContent className="space-y-2 flex-1">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Calendar className="h-4 w-4 shrink-0" />
           <span>{formatDate(booking.sessionDate)}</span>
         </div>
-        
-        <div className="flex items-center gap-2 text-sm">
-          <Clock className="h-4 w-4 text-muted-foreground" />
-          <span>
-            {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
-          </span>
-          <span className="text-muted-foreground">({booking.duration} min)</span>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Clock className="h-4 w-4 shrink-0" />
+          <span>{formatTime(booking.startTime)} – {formatTime(booking.endTime)}</span>
+          <span className="ml-1">({booking.duration} min)</span>
         </div>
-
         <div className="flex items-center gap-2 text-sm">
-          <DollarSign className="h-4 w-4 text-muted-foreground" />
+          <DollarSign className="h-4 w-4 text-muted-foreground shrink-0" />
           <span className="font-semibold">{formatCurrency(booking.price)}</span>
         </div>
 
-        {booking.studentNotes && userRole !== 'STUDENT' && (
-          <div className="pt-2 border-t">
-            <p className="text-xs text-muted-foreground">Student Notes:</p>
-            <p className="text-sm">{booking.studentNotes}</p>
-          </div>
-        )}
-
-        {booking.tutorNotes && userRole !== 'TUTOR' && (
-          <div className="pt-2 border-t">
-            <p className="text-xs text-muted-foreground">Tutor Notes:</p>
-            <p className="text-sm">{booking.tutorNotes}</p>
+        {/* If the student already left a review, show the star rating inline */}
+        {booking.review && userRole === 'STUDENT' && (
+          <div className="flex items-center gap-1 pt-1">
+            {[1,2,3,4,5].map(s => (
+              <Star key={s} className={`h-4 w-4 ${s <= booking.review!.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+            ))}
+            <span className="text-xs text-muted-foreground ml-1">Your review</span>
           </div>
         )}
       </CardContent>
-      
-      <CardFooter className="flex gap-2 flex-wrap">
+
+      <CardFooter className="flex flex-wrap gap-2 pt-0">
         <Link href={`/bookings/${booking.id}`}>
-          <Button variant="outline" size="sm">View Details</Button>
+          <Button variant="outline" size="sm">Details</Button>
         </Link>
 
-        {booking.status === 'COMPLETED' && !booking.review && userRole === 'STUDENT' && (
-          <Link href={`/bookings/${booking.id}/review`}>
-            <Button size="sm" variant="secondary">Leave Review</Button>
+        {showConfirm && (
+          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => onComplete!(booking.id)}>
+            <CheckCircle2 className="h-4 w-4 mr-1" /> Confirm
+          </Button>
+        )}
+
+        {showComplete && (
+          <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => onComplete!(booking.id)}>
+            <CheckCircle2 className="h-4 w-4 mr-1" /> Completed
+          </Button>
+        )}
+
+        {showCancel && (
+          <Button size="sm" variant="destructive" onClick={() => onCancel!(booking.id)}>
+            <XCircle className="h-4 w-4 mr-1" /> Cancel
+          </Button>
+        )}
+
+        {showReview && (
+          <Link href={`/bookings/${booking.id}`}>
+            <Button size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-white">
+              <Star className="h-4 w-4 mr-1" /> Leave Review
+            </Button>
           </Link>
         )}
       </CardFooter>

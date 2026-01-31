@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, LoginFormData } from '@/lib/validations';
 import { signIn } from '@/lib/auth-client';
+import { apiClient } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,19 +30,32 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
-     const res= await signIn.email({
+      // 1. Sign in (creates the session cookie)
+      await signIn.email({
         email: data.email,
         password: data.password,
-        callbackURL: '/dashboard',
       });
-      if (!res || res.error) {
-         toast.error('Invalid email or password');
+
+      // 2. Fetch the real user profile so we get the role field
+      //    that better-auth does not include in its session by default
+      let role = 'STUDENT'; // safe default
+      try {
+        const profileRes = await apiClient.get('/users/profile');
+        role = profileRes?.data?.role || 'STUDENT';
+      } catch {
+        // If profile fetch fails, fall back to default route
       }
-      if (res.data?.token) {
-        toast.success('Login successful!');
-      router.push('/dashboard');
+
+      toast.success('Login successful!');
+
+      // 3. Redirect based on actual role
+      if (role === 'TUTOR') {
+        router.push('/tutor/dashboard');
+      } else if (role === 'ADMIN') {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard');
       }
-      
     } catch (error) {
       toast.error('Invalid email or password');
     } finally {

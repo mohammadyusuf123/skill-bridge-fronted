@@ -25,6 +25,7 @@ export default function TutorBookingsPage() {
   const stats = {
     total: bookings.length,
     confirmed: bookings.filter(b => b.status === 'CONFIRMED').length,
+    pending: bookings.filter(b => b.status === 'PENDING').length,
     completed: bookings.filter(b => b.status === 'COMPLETED').length,
     cancelled: bookings.filter(b => b.status === 'CANCELLED').length,
   };
@@ -78,7 +79,8 @@ export default function TutorBookingsPage() {
       <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
         <TabsList>
           <TabsTrigger value="ALL">All ({stats.total})</TabsTrigger>
-          <TabsTrigger value="CONFIRMED">Upcoming ({stats.confirmed})</TabsTrigger>
+          <TabsTrigger value="PENDING">Pending ({stats.pending})</TabsTrigger>
+          <TabsTrigger value="CONFIRMED">Confirmed ({stats.confirmed})</TabsTrigger>
           <TabsTrigger value="COMPLETED">Completed ({stats.completed})</TabsTrigger>
           <TabsTrigger value="CANCELLED">Cancelled ({stats.cancelled})</TabsTrigger>
         </TabsList>

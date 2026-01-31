@@ -29,4 +29,9 @@ export const bookingApi = {
   getBookingStats: async (): Promise<ApiResponse<any>> => {
     return apiClient.get('/bookings/stats');
   },
+
+  // Admin: get every booking on the platform
+  getAllBookings: async (filters?: { status?: string; search?: string; page?: number; limit?: number }): Promise<ApiResponse<PaginatedResponse<Booking>>> => {
+    return apiClient.get('/bookings/all', { params: filters });
+  },
 };

@@ -296,3 +296,7 @@ export interface BookingFilters {
   page?: number;
   limit?: number;
 }
+
+export interface BulkCreateAvailabilityFormData {
+  slots: CreateAvailabilityFormData[];
+}

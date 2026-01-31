@@ -146,8 +146,8 @@ export default function BookingDetailPage() {
               )}
 
               {/* Actions */}
-              <div className="pt-4 border-t flex gap-3">
-                {booking.status === 'CONFIRMED' && !isPast && (
+              <div className="pt-4 border-t flex gap-3 flex-wrap">
+                {(booking.status === 'CONFIRMED' || booking.status === 'PENDING') && (
                   <Button
                     variant="destructive"
                     onClick={() => cancelBooking.mutate({ bookingId: booking.id })}
@@ -155,6 +155,17 @@ export default function BookingDetailPage() {
                   >
                     {cancelBooking.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Cancel Booking
+                  </Button>
+                )}
+
+                {booking.status === 'PENDING' && session?.user.role === 'TUTOR' && (
+                  <Button
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    onClick={() => completeBooking.mutate({ bookingId: booking.id })}
+                    disabled={completeBooking.isPending}
+                  >
+                    {completeBooking.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Confirm Booking
                   </Button>
                 )}
 
