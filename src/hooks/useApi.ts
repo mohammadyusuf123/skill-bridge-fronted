@@ -36,7 +36,14 @@ export function useTutors() {
     queryFn: () => tutorApi.searchTutors(filters),
   });
 }
-
+// Get tutor profile by user ID (for booking)
+export function useTutorProfileByUserId(userId: string | null) {
+  return useQuery({
+    queryKey: ['tutor-by-user', userId],
+    queryFn: () => tutorApi.getProfileByUserId(userId!),
+    enabled: !!userId,
+  });
+}
 export function useTutorProfile(tutorId: string | null) {
   return useQuery({
     queryKey: ['tutor', tutorId],
