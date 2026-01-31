@@ -88,17 +88,20 @@ export default function AdminUsersPage() {
 
   const users = data?.data || [];
   
-  const filteredUsers = users.filter(user => {
+  // Ensure users is always an array
+  const usersArray = Array.isArray(users) ? users : [];
+  
+  const filteredUsers = usersArray.filter(user => {
     const matchesSearch = user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          user.email.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesSearch;
   });
 
   const stats = {
-    total: users.length,
-    students: users.filter(u => u.role === 'STUDENT').length,
-    tutors: users.filter(u => u.role === 'TUTOR').length,
-    active: users.filter(u => u.status === 'ACTIVE').length,
+    total: usersArray.length,
+    students: usersArray.filter(u => u.role === 'STUDENT').length,
+    tutors: usersArray.filter(u => u.role === 'TUTOR').length,
+    active: usersArray.filter(u => u.status === 'ACTIVE').length,
   };
 
   return (

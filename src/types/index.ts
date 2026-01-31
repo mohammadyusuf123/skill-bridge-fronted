@@ -198,17 +198,12 @@ export interface AdminDashboard {
 // API Response Types
 export interface ApiResponse<T = any> {
   success: boolean;
-  data?: T;
+  data: T;
   message?: string;
   error?: string;
   errors?: Array<{ field: string; message: string }>;
-  meta?: {
-    page?: number;
-    limit?: number;
-    total?: number;
-    totalPages?: number;
-  };
 }
+
 
 export interface PaginatedResponse<T> {
   data: T[];

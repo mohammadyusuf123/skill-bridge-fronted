@@ -1,6 +1,6 @@
 'use client';
 
-import { useBookings, useCompleteBooking } from '@/hooks/useApi';
+import { useBookings, useCompleteBooking, useCancelBooking } from '@/hooks/useApi';
 import BookingCard from '@/components/booking/BookingCard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -10,9 +10,13 @@ import type { BookingStatus } from '@/types';
 
 export default function TutorBookingsPage() {
   const [statusFilter, setStatusFilter] = useState<BookingStatus | 'ALL'>('ALL');
-  const { data, isLoading } = useBookings();
+  const { data, isLoading, error } = useBookings();
   const completeBooking = useCompleteBooking();
+  const cancelBooking = useCancelBooking();
 
+  console.log('Tutor Bookings Data:', data);
+  console.log('Tutor Bookings Error:', error);
+  
   const bookings = data?.data?.data || [];
   const filteredBookings = statusFilter === 'ALL' 
     ? bookings 
@@ -88,6 +92,7 @@ export default function TutorBookingsPage() {
                   booking={booking}
                   userRole="TUTOR"
                   onComplete={(id) => completeBooking.mutate({ bookingId: id })}
+                  onCancel={(id) => cancelBooking.mutate({ bookingId: id })}
                 />
               ))}
             </div>

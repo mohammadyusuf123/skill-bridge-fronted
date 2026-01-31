@@ -21,7 +21,13 @@ import { BulkCreateAvailabilityFormData } from '@/lib/validations';
 // ============================================
 // TUTOR HOOKS
 // ============================================
-
+//get all tutors
+export function useAllTutors(page: number = 1, limit: number = 10) {
+  return useQuery({
+    queryKey: ['all-tutors', page, limit],
+    queryFn: () => tutorApi.getAllTutors({ page, limit }),
+  });
+}
 export function useTutors() {
   const filters = useAppSelector(state => state.tutor.filters);
   

@@ -10,14 +10,19 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Search, X, SlidersHorizontal } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setFilters, resetFilters } from '@/store/slices/tutorSlice';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function FindTutorsPage() {
   const dispatch = useAppDispatch();
   const filters = useAppSelector(state => state.tutor.filters);
   const [showFilters, setShowFilters] = useState(false);
 
-  // Initially load ALL tutors (no filters)
+  // Reset filters on mount to show ALL tutors initially
+  useEffect(() => {
+    dispatch(resetFilters());
+  }, [dispatch]);
+
+  // Load tutors - will show ALL initially since filters are reset
   const { data, isLoading } = useTutors();
   const { data: categoriesData } = useCategories();
 
@@ -27,9 +32,9 @@ export default function FindTutorsPage() {
 
   const handleCategorySelect = (categoryId: string) => {
     if (filters.categoryId === categoryId) {
-      dispatch(setFilters({ categoryId: undefined }));
+      dispatch(setFilters({ categoryId: undefined, page: 1 }));
     } else {
-      dispatch(setFilters({ categoryId }));
+      dispatch(setFilters({ categoryId, page: 1 }));
     }
   };
 
@@ -180,10 +185,11 @@ export default function FindTutorsPage() {
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             Showing {tutors.length} of {meta.total} tutors
+            {hasActiveFilters && <span className="ml-2 text-primary">(filtered)</span>}
           </p>
-          {hasActiveFilters && (
+          {!hasActiveFilters && (
             <p className="text-sm text-muted-foreground">
-              Filters applied
+              Showing all available tutors
             </p>
           )}
         </div>
@@ -206,7 +212,7 @@ export default function FindTutorsPage() {
           {meta && meta.page < meta.totalPages && (
             <div className="flex justify-center">
               <Button onClick={handleLoadMore} variant="outline">
-                Load More Tutors
+                Load More Tutors ({meta.total - tutors.length} more)
               </Button>
             </div>
           )}

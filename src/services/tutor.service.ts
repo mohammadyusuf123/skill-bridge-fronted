@@ -14,6 +14,13 @@ export const tutorApi = {
     return apiClient.post('/tutors/profile', data);
   },
 
+  // Get all tutors
+  getAllTutors: async (params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<ApiResponse<PaginatedResponse<TutorProfile>>> => {
+    return apiClient.get('/tutors', { params });    
+  },
   // Get own tutor profile
   getOwnProfile: async (): Promise<ApiResponse<TutorProfile>> => {
     return apiClient.get('/tutors/profile/me');
