@@ -3,12 +3,15 @@ export type UserRole = 'STUDENT' | 'TUTOR' | 'ADMIN';
 export type UserStatus = 'ACTIVE' | 'BANNED' | 'SUSPENDED';
 export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
 export type DayOfWeek = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
-export type AppUser = {
+export interface AppUser {
   id: string;
   email: string;
-  role: 'STUDENT' | 'TUTOR' | 'ADMIN';
-  status?: 'ACTIVE' | 'BANNED' | 'SUSPENDED';
-};
+  name: string | null;
+  image?: string | null;
+  role: UserRole;
+  status?: UserStatus;
+}
+
 
 export type AppSession = {
   user: AppUser;

@@ -16,9 +16,11 @@ import {
   Home
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AppSession } from '@/types';
 
 export default function Sidebar() {
-  const { data: session } = useSession();
+   const { data: sessionData  } = useSession();
+  const session = sessionData as AppSession | null;
   const pathname = usePathname();
   const role = session?.user?.role
 
