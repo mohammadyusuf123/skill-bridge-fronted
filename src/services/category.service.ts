@@ -9,14 +9,14 @@ import {
 export const categoryApi = {
   // Get all categories
   getAllCategories: async (includeInactive: boolean = false): Promise<ApiResponse<Category[]>> => {
-    return apiClient.get('/categories', {
+    return apiClient.get('/tutor-categories', {
       params: { includeInactive }
     });
   },
 
   // Get category by ID
   getCategoryById: async (categoryId: string): Promise<ApiResponse<Category>> => {
-    return apiClient.get(`/categories/${categoryId}`);
+    return apiClient.get(`/tutor-categories/${categoryId}`);
   },
 
   // Get category by slug
@@ -26,7 +26,7 @@ export const categoryApi = {
 
   // Admin: Create new category
   createCategory: async (data: CreateCategoryFormData): Promise<ApiResponse<Category>> => {
-    return apiClient.post('/categories', data);
+    return apiClient.post('/tutor-categories', data);
   },
 
   // Admin: Update category
@@ -34,16 +34,16 @@ export const categoryApi = {
     categoryId: string,
     data: UpdateCategoryFormData
   ): Promise<ApiResponse<Category>> => {
-    return apiClient.put(`/categories/${categoryId}`, data);
+    return apiClient.put(`/tutor-categories/${categoryId}`, data);
   },
 
   // Admin: Delete category
   deleteCategory: async (categoryId: string): Promise<ApiResponse<any>> => {
-    return apiClient.delete(`/categories/${categoryId}`);
+    return apiClient.delete(`/tutor-categories/${categoryId}`);
   },
 
   // Admin: Toggle category status
   toggleCategoryStatus: async (categoryId: string): Promise<ApiResponse<Category>> => {
-    return apiClient.patch(`/categories/${categoryId}/toggle-status`);
+    return apiClient.patch(`/tutor-categories/${categoryId}/toggle-status`);
   },
 };

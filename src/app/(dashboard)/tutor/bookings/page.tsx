@@ -10,13 +10,10 @@ import type { BookingStatus } from '@/types';
 
 export default function TutorBookingsPage() {
   const [statusFilter, setStatusFilter] = useState<BookingStatus | 'ALL'>('ALL');
-  const { data, isLoading, error } = useBookings();
+  const { data, isLoading } = useBookings();
   const completeBooking = useCompleteBooking();
   const cancelBooking = useCancelBooking();
 
-  console.log('Tutor Bookings Data:', data);
-  console.log('Tutor Bookings Error:', error);
-  
   const bookings = data?.data?.data || [];
   const filteredBookings = statusFilter === 'ALL' 
     ? bookings 
@@ -48,11 +45,17 @@ export default function TutorBookingsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-5">
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold">{stats.total}</div>
             <p className="text-xs text-muted-foreground">Total Sessions</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
+            <p className="text-xs text-muted-foreground">Pending</p>
           </CardContent>
         </Card>
         <Card>

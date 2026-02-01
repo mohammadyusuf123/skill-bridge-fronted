@@ -7,13 +7,18 @@ import Navbar from '@/components/layout/Navbar';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { setFilters } from '@/store/slices/tutorSlice';
+import { setFilters, resetFilters } from '@/store/slices/tutorSlice';
+import { useEffect } from 'react';
 
 export default function TutorsPage() {
   const { data, isLoading } = useTutors();
-  console.log('Tutors data:', data);
   const dispatch = useAppDispatch();
   const filters = useAppSelector(state => state.tutor.filters);
+
+  // Reset filters on mount so this page always starts clean
+  useEffect(() => {
+    dispatch(resetFilters());
+  }, [dispatch]);
 
   const handleLoadMore = () => {
     dispatch(setFilters({ page: (filters.page || 1) + 1 }));

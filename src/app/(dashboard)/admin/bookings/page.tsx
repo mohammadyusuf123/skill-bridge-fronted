@@ -83,8 +83,9 @@ export default function AdminBookingsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-5">
         <Card><CardHeader className="pb-3"><CardDescription>Total</CardDescription><CardTitle className="text-3xl">{stats.total}</CardTitle></CardHeader></Card>
+        <Card><CardHeader className="pb-3"><CardDescription>Pending</CardDescription><CardTitle className="text-3xl text-yellow-600">{stats.pending}</CardTitle></CardHeader></Card>
         <Card><CardHeader className="pb-3"><CardDescription>Confirmed</CardDescription><CardTitle className="text-3xl text-blue-600">{stats.confirmed}</CardTitle></CardHeader></Card>
         <Card><CardHeader className="pb-3"><CardDescription>Completed</CardDescription><CardTitle className="text-3xl text-green-600">{stats.completed}</CardTitle></CardHeader></Card>
         <Card><CardHeader className="pb-3"><CardDescription>Cancelled</CardDescription><CardTitle className="text-3xl text-red-600">{stats.cancelled}</CardTitle></CardHeader></Card>

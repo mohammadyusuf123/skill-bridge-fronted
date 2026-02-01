@@ -300,3 +300,22 @@ export interface BookingFilters {
 export interface BulkCreateAvailabilityFormData {
   slots: CreateAvailabilityFormData[];
 }
+
+//cerate category from data
+export interface CreateCategoryFormData {
+  name: string;
+  slug: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+}
+
+//update category form data
+export interface UpdateCategoryFormData {
+  name?: string;
+  slug?: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+  isActive?: boolean;
+}
