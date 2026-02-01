@@ -33,6 +33,7 @@ export default function AdminDashboardPage() {
 
   const dashboard = data?.data;
   const overview = dashboard?.overview;
+const bookingGrowth = overview?.bookingGrowth ?? 0;
 
   return (
     <div className="space-y-6">
@@ -83,16 +84,17 @@ export default function AdminDashboardPage() {
           icon={TrendingUp}
           description="Current month"
         />
-        <StatsCard
-          title="Booking Growth"
-          value={`${overview?.bookingGrowth.toFixed(1) || 0}%`}
-          icon={overview?.bookingGrowth >= 0 ? ArrowUpRight : ArrowDownRight}
-          trend={overview?.bookingGrowth ? {
-            value: overview.bookingGrowth,
-            isPositive: overview.bookingGrowth >= 0
-          } : undefined}
-          description="vs last month"
-        />
+      <StatsCard
+  title="Booking Growth"
+  value={`${bookingGrowth.toFixed(1)}%`}
+  icon={bookingGrowth >= 0 ? ArrowUpRight : ArrowDownRight}
+  trend={{
+    value: bookingGrowth,
+    isPositive: bookingGrowth >= 0
+  }}
+  description="vs last month"
+/>
+
       </div>
 
       {/* Activity Stats */}

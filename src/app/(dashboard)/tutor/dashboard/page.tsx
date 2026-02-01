@@ -110,7 +110,7 @@ export default function TutorDashboardPage() {
             <CardDescription>Your scheduled tutoring sessions</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-3">
               {dashboard.upcomingSessions.slice(0, 4).map((booking) => (
                 <BookingCard
                   key={booking.id}
@@ -124,7 +124,7 @@ export default function TutorDashboardPage() {
         </Card>
       )}
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div >
         {/* Recent Sessions */}
         {dashboard?.recentSessions && dashboard.recentSessions.length > 0 && (
           <Card>
@@ -133,31 +133,14 @@ export default function TutorDashboardPage() {
               <CardDescription>Your latest tutoring sessions</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-4 grid lg:grid-cols-3 gap-6">
                 {dashboard.recentSessions.slice(0, 5).map((booking) => (
-                  <div key={booking.id} className="flex items-center gap-4 pb-4 border-b last:border-0">
-                    <Avatar>
-                      <AvatarImage src={booking.student?.image || ''} />
-                      <AvatarFallback>
-                        {booking.student?.name?.[0]?.toUpperCase() || 'S'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{booking.subject}</p>
-                      <p className="text-sm text-muted-foreground truncate">
-                        {booking.student?.name} • {formatDate(booking.sessionDate)}
-                      </p>
-                    </div>
-                    <Badge 
-                      className={
-                        booking.status === 'COMPLETED' ? 'bg-green-500' :
-                        booking.status === 'CONFIRMED' ? 'bg-blue-500' :
-                        'bg-gray-500'
-                      }
-                    >
-                      {booking.status}
-                    </Badge>
-                  </div>
+                   <BookingCard
+                  key={booking.id}
+                  booking={booking}
+                  userRole="TUTOR"
+                  onComplete={(id) => completeBooking.mutate({ bookingId: id })}
+                />
                 ))}
               </div>
             </CardContent>

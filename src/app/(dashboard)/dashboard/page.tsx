@@ -21,6 +21,7 @@ export default function StudentDashboardPage() {
   }
 
   const dashboard = data?.data;
+  console.log('Student Dashboard Data:', dashboard);
 
   return (
     <div className="space-y-6">
@@ -84,6 +85,7 @@ export default function StudentDashboardPage() {
           )}
         </CardContent>
       </Card>
+    
 
       {/* Recent Bookings */}
       {dashboard?.recentBookings && dashboard.recentBookings.length > 0 && (

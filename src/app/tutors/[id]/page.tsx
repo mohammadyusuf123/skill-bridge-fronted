@@ -54,7 +54,6 @@ export default function TutorDetailPage() {
   }
 
   const tutor = tutorData.data;
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

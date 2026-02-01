@@ -11,11 +11,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Calendar, Clock, DollarSign, User, Star, ArrowLeft } from 'lucide-react';
 import { formatDate, formatTime, formatCurrency } from '@/lib/utils';
 import { useState } from 'react';
-
+import { AppSession } from '@/types';
 export default function BookingDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: sessionData  } = useSession();
+  const session = sessionData as AppSession | null;
   const bookingId = params.id as string;
 
   const { data, isLoading } = useBooking(bookingId);
@@ -150,7 +151,9 @@ export default function BookingDetailPage() {
                 {(booking.status === 'CONFIRMED' || booking.status === 'PENDING') && (
                   <Button
                     variant="destructive"
-                    onClick={() => cancelBooking.mutate({ bookingId: booking.id })}
+                    onClick={() => {cancelBooking.mutate({ bookingId: booking.id })
+                  router.back()
+                  }}
                     disabled={cancelBooking.isPending}
                   >
                     {cancelBooking.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -161,7 +164,7 @@ export default function BookingDetailPage() {
                 {booking.status === 'PENDING' && session?.user.role === 'TUTOR' && (
                   <Button
                     className="bg-blue-600 hover:bg-blue-700 text-white"
-                    onClick={() => completeBooking.mutate({ bookingId: booking.id })}
+                    onClick={() => {completeBooking.mutate({ bookingId: booking.id }); router.back();}}
                     disabled={completeBooking.isPending}
                   >
                     {completeBooking.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
