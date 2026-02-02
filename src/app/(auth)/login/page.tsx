@@ -35,6 +35,7 @@ export default function LoginPage() {
         email: data.email,
         password: data.password,
       });
+      await new Promise((r) => setTimeout(r, 50));
        if (res.data?.token) {
          toast.success('Login successful!');
          router.push('/dashboard');
