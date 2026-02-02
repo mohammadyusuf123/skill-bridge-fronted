@@ -1,3 +1,4 @@
+import { User, UserRole, UserStatus } from "@/types";
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
@@ -6,8 +7,10 @@ export const authClient = createAuthClient({
     credentials: "include",
   },
 });
-
-
+// Extend Better Auth types to match your AppUser
+export type AppUser = User & {
+  status?: UserStatus;
+}
 export const {
   signIn,
   signUp,
