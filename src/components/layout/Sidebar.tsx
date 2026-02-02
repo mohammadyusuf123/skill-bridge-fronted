@@ -20,6 +20,7 @@ import { AppSession } from '@/types';
 
 export default function Sidebar() {
    const { data: sessionData  } = useSession();
+   console.log("Session Data:", sessionData);
   const session = sessionData as AppSession | null;
   const pathname = usePathname();
   const role = session?.user?.role
