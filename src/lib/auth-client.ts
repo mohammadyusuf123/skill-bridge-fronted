@@ -1,16 +1,17 @@
-import { User, UserRole, UserStatus } from "@/types";
 import { createAuthClient } from "better-auth/react";
+import type { UserRole, UserStatus } from '@/types';
 
 export const authClient = createAuthClient({
-  baseURL: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/auth`,
+  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL 
+    ? `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/auth`
+    : "http://localhost:3000/auth", // fallback for build time
   fetchOptions: {
     credentials: "include",
   },
 });
-// Extend Better Auth types to match your AppUser
-export type AppUser = User & {
-  status?: UserStatus;
-}
+
+
+
 export const {
   signIn,
   signUp,
