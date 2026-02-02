@@ -20,17 +20,17 @@ class ApiClient {
     });
 
     // Response interceptor — redirect to login on 401
-    this.client.interceptors.response.use(
-      (response) => response,
-      (error: AxiosError<ApiResponse>) => {
-        if (error.response?.status === 401) {
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login';
-          }
-        }
-        return Promise.reject(error);
-      }
-    );
+    // this.client.interceptors.response.use(
+    //   (response) => response,
+    //   (error: AxiosError<ApiResponse>) => {
+    //     if (error.response?.status === 401) {
+    //       if (typeof window !== 'undefined') {
+    //         window.location.href = '/login';
+    //       }
+    //     }
+    //     return Promise.reject(error);
+    //   }
+    // );
   }
 
   async get<T = any>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
