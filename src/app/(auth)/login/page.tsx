@@ -31,11 +31,11 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       // 1. Sign in (creates the session cookie)
-      await signIn.email({
+     const res = await signIn.email({
         email: data.email,
         password: data.password,
       });
-
+console.log('Sign-in response:', res);
       // 2. Fetch the real user profile so we get the role field
       //    that better-auth does not include in its session by default
       let role = 'STUDENT'; // safe default
