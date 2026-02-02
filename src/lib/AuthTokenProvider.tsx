@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useSession } from '@/lib/auth-client';
 import { apiClient } from '@/lib/api-client';
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function AuthTokenProvider({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
 
   useEffect(() => {
