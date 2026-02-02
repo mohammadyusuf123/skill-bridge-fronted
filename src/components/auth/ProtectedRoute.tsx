@@ -13,20 +13,23 @@ interface ProtectedRouteProps {
   requireProfile?: boolean;
 }
 
-export default function ProtectedRoute({ 
-  children, 
+export default function ProtectedRoute({
+  children,
   requiredRole,
-  requireProfile = false 
+  requireProfile = false
 }: ProtectedRouteProps) {
   const { data: session, isPending } = useSession();
   const router = useRouter();
 
   useEffect(() => {
+    // Only redirect to login if we're done loading AND there's no session
     if (!isPending && !session) {
       router.push('/login');
+      return;
     }
 
-    if (requiredRole && session && (session as any).role !== requiredRole) {
+    // Only check role requirements if we have a session
+    if (!isPending && session && requiredRole && (session as any).role !== requiredRole) {
       // Redirect based on user role
       const redirectMap: Record<UserRole, string> = {
         STUDENT: '/dashboard',

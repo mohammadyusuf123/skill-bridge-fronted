@@ -48,7 +48,10 @@ export default function LoginPage() {
 
       toast.success('Login successful!');
 
-      // 3. Redirect based on actual role
+      // 3. Refresh the router to ensure session is updated
+      router.refresh();
+
+      // 4. Redirect based on actual role
       if (role === 'TUTOR') {
         router.push('/tutor/dashboard');
       } else if (role === 'ADMIN') {
