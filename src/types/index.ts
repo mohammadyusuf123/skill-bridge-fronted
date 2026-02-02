@@ -331,3 +331,6 @@ export interface UpdateCategoryFormData {
   color?: string;
   isActive?: boolean;
 }
+
+//session loading state
+export type LoadingState = 'loading' | 'loaded' | 'error';

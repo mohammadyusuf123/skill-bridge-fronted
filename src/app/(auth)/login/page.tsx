@@ -36,9 +36,10 @@ export default function LoginPage() {
         password: data.password,
       });
       await new Promise((r) => setTimeout(r, 50));
+      console.log('SignIn Response:', res);
        if (res.data?.token) {
          toast.success('Login successful!');
-         router.push('/dashboard');
+         window.location.href = '/dashboard';
       }
       // 2. Fetch the real user profile so we get the role field
       //    that better-auth does not include in its session by default
