@@ -35,27 +35,30 @@ export default function LoginPage() {
         email: data.email,
         password: data.password,
       });
-       console.log('User role:', res);
+       if (res.data?.token) {
+         toast.success('Login successful!');
+         router.push('/dashboard');
+      }
       // 2. Fetch the real user profile so we get the role field
       //    that better-auth does not include in its session by default
-      let role = 'STUDENT'; // safe default
-      try {
-        const profileRes = await apiClient.get('/users/profile');
-        role = profileRes?.data?.role || 'STUDENT';
-      } catch {
-        // If profile fetch fails, fall back to default route
-      }
+      // let role = 'STUDENT'; // safe default
+      // try {
+      //   const profileRes = await apiClient.get('/users/profile');
+      //   role = profileRes?.data?.role || 'STUDENT';
+      // } catch {
+      //   // If profile fetch fails, fall back to default route
+      // }
 
-      toast.success('Login successful!');
+     
 
       // 3. Redirect based on actual role
-      if (role === 'TUTOR') {
-        router.push('/tutor/dashboard');
-      } else if (role === 'ADMIN') {
-        router.push('/admin');
-      } else {
-        router.push('/dashboard');
-      }
+      // if (role === 'TUTOR') {
+      //   router.push('/tutor/dashboard');
+      // } else if (role === 'ADMIN') {
+      //   router.push('/admin');
+      // } else {
+      //   router.push('/dashboard');
+      // }
     } catch (error) {
       toast.error('Invalid email or password');
     } finally {
