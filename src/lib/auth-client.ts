@@ -1,9 +1,9 @@
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-  baseURL: "https://skill-bridge-backend-sooty.vercel.app/api/auth",
-  fetchOptions: {
-    credentials: "include",
+  baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    fetchOptions: {
+    credentials: 'include', // <-- important!
   },
 });
 

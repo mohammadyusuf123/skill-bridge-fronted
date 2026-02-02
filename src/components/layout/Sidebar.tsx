@@ -4,35 +4,26 @@ import { useSession, signOut } from '@/lib/auth-client';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import {
-  LayoutDashboard,
-  BookOpen,
-  User,
+import { 
+  LayoutDashboard, 
+  BookOpen, 
+  User, 
   Calendar,
   Users,
   Settings,
   LogOut,
   GraduationCap,
+  Home
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { AppSession, LoadingState } from '@/types';
+import { AppSession } from '@/types';
 
 export default function Sidebar() {
-const { data: sessionData, isPending: sessionPending, isRefetching: sessionRefetching } = useSession();
-const session = sessionData as AppSession | null;
-const dataLoading = sessionRefetching || (sessionPending && !session); // This line checks if the data is being refetched or if the data is pending and there's no session data yet.
-const pathname = usePathname();
-
-  // ⛔️ IMPORTANT
-  if (dataLoading) {
-    return null; // or skeleton loader
-  }
-
-  if (!session) {
-    return null; // user not logged in
-  }
-
-  const role = session.user.role;
+   const { data: sessionData  } = useSession();
+  const session = sessionData as AppSession | null;
+  console.log('Sidebar session:', session);
+  const pathname = usePathname();
+  const role = session?.user?.role
 
   const studentLinks = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -55,12 +46,11 @@ const pathname = usePathname();
     { href: '/admin/categories', label: 'Categories', icon: Settings },
   ];
 
-  const links =
-    role === 'ADMIN'
-      ? adminLinks
-      : role === 'TUTOR'
-      ? tutorLinks
-      : studentLinks;
+  const links = role === 'ADMIN' ? adminLinks : role === 'TUTOR' ? tutorLinks : studentLinks;
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <aside className="w-64 border-r bg-muted/40 flex flex-col h-screen">
@@ -71,36 +61,34 @@ const pathname = usePathname();
         </Link>
       </div>
 
-      <div className="p-4 border-b">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="text-sm font-semibold text-primary">
-              {session.user.name?.[0]?.toUpperCase() || 'U'}
-            </span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">
-              {session.user.name}
-            </p>
-            <p className="text-xs text-muted-foreground capitalize">
-              {role.toLowerCase()}
-            </p>
+      {session && (
+        <div className="p-4 border-b">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <span className="text-sm font-semibold text-primary">
+                {session.user.name?.[0]?.toUpperCase() || 'U'}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{session.user.name}</p>
+              <p className="text-xs text-muted-foreground capitalize">{role?.toLowerCase()}</p>
+            </div>
           </div>
         </div>
-      </div>
-
+      )}
+      
       <nav className="flex-1 p-4 space-y-1">
-        {links.map((link) => {
+        {links.map(link => {
           const Icon = link.icon;
           return (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm',
+                "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm",
                 pathname === link.href
-                  ? 'bg-primary text-primary-foreground'
-                  : 'hover:bg-muted'
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-muted"
               )}
             >
               <Icon className="h-5 w-5" />
@@ -114,7 +102,7 @@ const pathname = usePathname();
         <Button
           variant="ghost"
           className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-          onClick={() => signOut()}
+          onClick={handleSignOut}
         >
           <LogOut className="h-5 w-5 mr-3" />
           Logout
