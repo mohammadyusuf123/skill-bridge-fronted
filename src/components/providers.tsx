@@ -1,35 +1,32 @@
 'use client';
-
-import { useEffect } from 'react';
-import { useSession } from '@/lib/auth-client';
-import { apiClient } from '@/lib/api-client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Provider as ReduxProvider } from 'react-redux';
+import { makeStore } from '@/store';
+import { useState } from 'react';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const { data: session } = useSession();
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 60 * 1000, // 1 minute
+            refetchOnWindowFocus: false,
+            retry: 1,
+          },
+        },
+      })
+  );
 
-  useEffect(() => {
-    // When session changes, get a fresh JWT token
-    const fetchToken = async () => {
-      if (session?.user) {
-        try {
-          const response = await fetch('/api/auth/get-backend-token');
-          if (response.ok) {
-            const { token } = await response.json();
-            if (token) {
-              apiClient.setToken(token);
-            }
-          }
-        } catch (error) {
-          console.error('Failed to fetch backend token:', error);
-        }
-      } else {
-        // No session, clear the token
-        apiClient.clearToken();
-      }
-    };
+  const [store] = useState(() => makeStore());
 
-    fetchToken();
-  }, [session]);
-
-  return <>{children}</>;
+  return (
+    <ReduxProvider store={store}>
+      <QueryClientProvider client={queryClient}>
+        {children}
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ReduxProvider>
+  );
 }

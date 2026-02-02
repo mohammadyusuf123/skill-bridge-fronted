@@ -30,46 +30,25 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
-      // 1. Sign in with better-auth (creates the session cookie)
+      // 1. Sign in (creates the session cookie)
       await signIn.email({
         email: data.email,
         password: data.password,
       });
 
-      // 2. Get the JWT token from backend for API calls
-      try {
-        const tokenResponse = await fetch('/api/auth/get-backend-token');
-        if (tokenResponse.ok) {
-          const { token } = await tokenResponse.json();
-          if (token) {
-            apiClient.setToken(token);
-          }
-        }
-      } catch (tokenError) {
-        console.error('Failed to get backend token:', tokenError);
-        // Continue anyway - we have the session cookie
-      }
-
-      // 3. Fetch the real user profile to get the role field
+      // 2. Fetch the real user profile so we get the role field
+      //    that better-auth does not include in its session by default
       let role = 'STUDENT'; // safe default
       try {
         const profileRes = await apiClient.get('/users/profile');
         role = profileRes?.data?.role || 'STUDENT';
-        
-        // Set role cookie for middleware
-        await fetch('/api/auth/set-role-cookie', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ role }),
-        });
-      } catch (profileError) {
-        console.error('Failed to fetch profile:', profileError);
-        // Fall back to default route
+      } catch {
+        // If profile fetch fails, fall back to default route
       }
 
       toast.success('Login successful!');
 
-      // 4. Redirect based on actual role
+      // 3. Redirect based on actual role
       if (role === 'TUTOR') {
         router.push('/tutor/dashboard');
       } else if (role === 'ADMIN') {
