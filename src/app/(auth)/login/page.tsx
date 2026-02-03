@@ -44,7 +44,7 @@ export default function LoginPage() {
         password: data.password,
       });
       console.log('Sign-in response:', res);
-        window.location.href = '/season'; // Temporary hard redirect to test session handling
+        // window.location.href = '/season'; // Temporary hard redirect to test session handling
       // 2️⃣ Fetch role from backend
       let role: 'STUDENT' | 'TUTOR' | 'ADMIN' = 'STUDENT';
 
@@ -58,7 +58,7 @@ export default function LoginPage() {
       toast.success('Login successful!');
 
       // 3️⃣ Invalidate router cache
-      router.refresh();
+      // router.refresh();
 
       // 4️⃣ HARD REDIRECT (THIS IS THE FIX)
       // if (role === 'TUTOR') {
