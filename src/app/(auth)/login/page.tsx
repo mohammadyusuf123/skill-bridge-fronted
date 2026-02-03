@@ -43,7 +43,7 @@ export default function LoginPage() {
       //   email: data.email,
       //   password: data.password,
       // });
-      const res = await fetch('https://skill-bridge-backend-sooty.vercel.app/api/login', {
+      const res = await fetch('https://skill-bridge-backend-sooty.vercel.app/api/auth/sign-in/email', {
   method: 'POST',
   credentials: 'include', // CRITICAL
   headers: {
