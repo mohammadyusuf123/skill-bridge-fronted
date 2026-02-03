@@ -1,43 +1,37 @@
-'use client'
-import { useSession } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
+// import { useSession } from '@/lib/auth-client';
+// import { useRouter } from 'next/navigation';
+// import { useEffect } from 'react';
+// import { Loader2 } from 'lucide-react';
 import type { UserRole } from '@/types';
 import { userService } from '@/services/userSeason';
-
+import { NextRequest, NextResponse } from "next/server";
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredRole?: UserRole;
   requireProfile?: boolean;
 }
 
-export default  async function ProtectedRoute({
+export default  async function ProtectedRoute(  request: NextRequest,
+  response: NextResponse,{
   children,
   requiredRole,
   requireProfile = false
 }: ProtectedRouteProps) {
    const { data: session} = await userService.getSession();
   console.log('Session data:', session);
-  const router = useRouter();
+  // const router = useRouter();
   // Add debugging
-  useEffect(() => {
+
     if (!session) {
       console.log('No session found, redirecting to login');
-      router.push('/login');
-      return;
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
     // Check role requirements
-    if (requiredRole && (session as any).role !== requiredRole) {
-      const redirectMap: Record<UserRole, string> = {
-        STUDENT: '/dashboard',
-        TUTOR: '/tutor/dashboard',
-        ADMIN: '/admin',
-      };
-      router.push(redirectMap[(session as any).role as UserRole] || '/');
+    if (session) {
+     return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-  }, [session, requiredRole, router]);
+
 
 //  [session, isPending, requiredRole, router]
   // if (isPending) {
