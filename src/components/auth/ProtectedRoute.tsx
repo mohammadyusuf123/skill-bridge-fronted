@@ -22,7 +22,12 @@ export default function ProtectedRoute({
   const router = useRouter();
   // Add debugging
   useEffect(() => {
-    console.log('Session state:', { session, isPending  });
+   fetch('https://skill-bridge-backend-sooty.vercel.app/api/auth/get-session', {
+  credentials: 'include'
+})
+  .then(r => r.json())
+  .then(data => console.log('Direct fetch result:', data))
+  .catch(err => console.error('Fetch error:', err))
   }, [session, isPending]);
 
   useEffect(() => {
