@@ -2,9 +2,11 @@ import { cookies } from 'next/headers';
 import React from 'react';
 
 export default async function Page() {
-  const cookieStore = await cookies();
+
   const getSession = async () => {
     try {
+        const cookieStore = await cookies();
+        console.log('Cookies in getSession:', cookieStore);
       const res = await fetch(
         'https://skill-bridge-backend-sooty.vercel.app/api/auth/get-session',
         {
