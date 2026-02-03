@@ -39,20 +39,28 @@ export default function LoginPage() {
 
     try {
       // 1️⃣ Sign in
-      const res = await signIn.email({
-        email: data.email,
-        password: data.password,
-      });
-      
-      if (res.data) {
-        console.log('Session after sign-in:', res.data);
+      // const res = await signIn.email({
+      //   email: data.email,
+      //   password: data.password,
+      // });
+      const res = await fetch('https://skill-bridge-backend-sooty.vercel.app/api/login', {
+  method: 'POST',
+  credentials: 'include', // CRITICAL
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ username: data.email, password: data.password })
+});
+console.log(res);
+      // if (res.data) {
+      //   console.log('Session after sign-in:', res.data);
         
         // 2️⃣ Extract token and set in HttpOnly cookie via server action
-        const token = res.data?.token || res.data.token;
-        if (token) {
-          await setAuthToken(token);
-        }
-      }
+      //   const token = res.data?.token || res.data.token;
+      //   if (token) {
+      //     await setAuthToken(token);
+      //   }
+      // }
       
       console.log('Sign-in response:', res);
       
