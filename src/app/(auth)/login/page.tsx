@@ -39,10 +39,11 @@ export default function LoginPage() {
 
     try {
       // 1️⃣ Sign in → sets cookie
-      await signIn.email({
+    const res =  await signIn.email({
         email: data.email,
         password: data.password,
       });
+      console.log('Sign-in response:', res);
         window.location.href = '/season'; // Temporary hard redirect to test session handling
       // 2️⃣ Fetch role from backend
       let role: 'STUDENT' | 'TUTOR' | 'ADMIN' = 'STUDENT';
