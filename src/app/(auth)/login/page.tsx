@@ -43,16 +43,16 @@ export default function LoginPage() {
         email: data.email,
         password: data.password,
       });
-
+        window.location.href = '/season'; // Temporary hard redirect to test session handling
       // 2️⃣ Fetch role from backend
       let role: 'STUDENT' | 'TUTOR' | 'ADMIN' = 'STUDENT';
 
-      try {
-        const profileRes = await apiClient.get('/users/profile');
-        role = profileRes?.data?.role || 'STUDENT';
-      } catch {
-        // fallback is fine
-      }
+      // try {
+      //   const profileRes = await apiClient.get('/users/profile');
+      //   role = profileRes?.data?.role || 'STUDENT';
+      // } catch {
+      //   // fallback is fine
+      // }
 
       toast.success('Login successful!');
 
@@ -60,13 +60,13 @@ export default function LoginPage() {
       router.refresh();
 
       // 4️⃣ HARD REDIRECT (THIS IS THE FIX)
-      if (role === 'TUTOR') {
-        window.location.href = '/tutor/dashboard';
-      } else if (role === 'ADMIN') {
-        window.location.href = '/admin';
-      } else {
-        window.location.href = '/dashboard';
-      }
+      // if (role === 'TUTOR') {
+      //   window.location.href = '/tutor/dashboard';
+      // } else if (role === 'ADMIN') {
+      //   window.location.href = '/admin';
+      // } else {
+      //   window.location.href = '/dashboard';
+      // }
     } catch (error) {
       toast.error('Invalid email or password');
     } finally {
