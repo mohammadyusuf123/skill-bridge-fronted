@@ -5,7 +5,7 @@ export default async function Page() {
   const getSession = async () => {
     try {
       const cookieStore = cookies();
-
+console.log(cookieStore.toString());
       const res = await fetch(
         'https://skill-bridge-backend-sooty.vercel.app/api/auth/get-session',
         {
