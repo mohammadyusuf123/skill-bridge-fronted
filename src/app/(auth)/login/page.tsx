@@ -49,7 +49,6 @@ export default function LoginPage() {
         
         // 2️⃣ Extract token and set in HttpOnly cookie via server action
         const token = res.data?.token || res.data.token;
-        console.log('Extracted token:', token);
         if (token) {
           await setAuthToken(token);
         }
@@ -63,7 +62,7 @@ export default function LoginPage() {
       router.refresh();
       
       // 4️⃣ Redirect
-      router.push('/season');
+      router.push('/dashboard');
       
     } catch (error) {
       console.error('Login error:', error);
