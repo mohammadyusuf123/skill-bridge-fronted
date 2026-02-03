@@ -2,8 +2,8 @@ import { userService } from '@/services/userSeason';
 import { cookies } from 'next/headers';
 import React from 'react'
 
-export default async function page() {
- async function getSession() {
+export default  function page() {
+ const  getSession=async () => {
     try {
       const cookieStore = await cookies();
 
@@ -30,7 +30,7 @@ export default async function page() {
       return { data: null, error: { message: "Something Went Wrong" } };
     }
   }
-  const session = await getSession();
+  const session =  getSession();
   console.log('Session in season page:', session);
   return (
     <div>This is from season</div>
