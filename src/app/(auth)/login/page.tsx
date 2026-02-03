@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, LoginFormData } from '@/lib/validations';
 import { signIn } from '@/lib/auth-client';
-import { apiClient } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,7 +20,7 @@ import {
 } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
-import { cookies } from 'next/headers';
+import { setAuthToken } from '@/lib/auth-token';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,41 +38,35 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // 1️⃣ Sign in → sets cookie
-    const res =  await signIn.email({
+      // 1️⃣ Sign in
+      const res = await signIn.email({
         email: data.email,
         password: data.password,
       });
+      
       if (res.data) {
         console.log('Session after sign-in:', res.data);
+        
+        // 2️⃣ Extract token and set in HttpOnly cookie via server action
+        const token = res.data?.token || res.data.token;
+        console.log('Extracted token:', token);
+        if (token) {
+          await setAuthToken(token);
+        }
       }
+      
       console.log('Sign-in response:', res);
-        router.push('/season');
-        // window.location.href = '/season'; // Temporary hard redirect to test session handling
-      // 2️⃣ Fetch role from backend
-      let role: 'STUDENT' | 'TUTOR' | 'ADMIN' = 'STUDENT';
-
-      // try {
-      //   const profileRes = await apiClient.get('/users/profile');
-      //   role = profileRes?.data?.role || 'STUDENT';
-      // } catch {
-      //   // fallback is fine
-      // }
-
+      
       toast.success('Login successful!');
-
-      // 3️⃣ Invalidate router cache
-      // router.refresh();
-
-      // 4️⃣ HARD REDIRECT (THIS IS THE FIX)
-      // if (role === 'TUTOR') {
-      //   window.location.href = '/tutor/dashboard';
-      // } else if (role === 'ADMIN') {
-      //   window.location.href = '/admin';
-      // } else {
-      //   window.location.href = '/dashboard';
-      // }
+      
+      // 3️⃣ Refresh router to pick up new cookie
+      router.refresh();
+      
+      // 4️⃣ Redirect
+      router.push('/season');
+      
     } catch (error) {
+      console.error('Login error:', error);
       toast.error('Invalid email or password');
     } finally {
       setIsLoading(false);
