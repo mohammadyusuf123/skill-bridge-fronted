@@ -1,7 +1,7 @@
 
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ApiResponse } from '@/types';
-const BASE_URL = "/api";
+const BASE_URL = "/api/auth";
 class ApiClient {
   private client: AxiosInstance;
   constructor() {
