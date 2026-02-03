@@ -4,6 +4,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 const APP_NAME = 'Skill Bridge'
 export const authClient = createAuthClient({
    baseURL: API_URL,
+  basePath: "/auth",
   baseURLType: 'server',
   plugins: [usernameClient()],
   // Enable smooth cookie handling
