@@ -62,7 +62,7 @@ export default function LoginPage() {
       router.refresh();
       
       // 4️⃣ Redirect
-      router.push('/dashboard');
+      router.push('/season');
       
     } catch (error) {
       console.error('Login error:', error);
