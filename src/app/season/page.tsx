@@ -1,38 +1,47 @@
-import { userService } from '@/services/userSeason';
 import { cookies } from 'next/headers';
-import React from 'react'
+import React from 'react';
 
-export default  function page() {
- const  getSession=async () => {
+export default async function Page() {
+  const getSession = async () => {
     try {
-      const cookieStore = await cookies();
+      const cookieStore = cookies();
 
-      console.log(cookieStore.toString());
+      const res = await fetch(
+        'https://skill-bridge-backend-sooty.vercel.app/api/auth/get-session',
+        {
+          headers: {
+            Cookie: cookieStore.toString(),
+          },
+          cache: 'no-store',
+        }
+      );
 
-      const res = await fetch(`https://skill-bridge-backend-sooty.vercel.app/api/auth/get-session`, {
-        headers: {
-          Cookie: cookieStore.toString(),
-        },
-        cache: "no-store",
-      });
+      if (!res.ok) {
+        throw new Error('Failed to fetch session');
+      }
 
       const session = await res.json();
 
-      console.log(session);
-
-      if (session === null) {
-        return { data: null, error: { message: "Session is missing." } };
+      if (!session) {
+        return { data: null, error: { message: 'Session is missing.' } };
       }
 
       return { data: session, error: null };
     } catch (err) {
       console.error(err);
-      return { data: null, error: { message: "Something Went Wrong" } };
+      return { data: null, error: { message: 'Something went wrong' } };
     }
-  }
-  const session =  getSession();
-  console.log('Session in season page:', session);
+  };
+
+  // ✅ MUST await here
+  const session = await getSession();
+
+  console.log('Session in session page:', session);
+
   return (
-    <div>This is from season</div>
-  )
+    <div>
+      <pre>{JSON.stringify(session, null, 2)}</pre>
+      This is from session
+    </div>
+  );
 }
