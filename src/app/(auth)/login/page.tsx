@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, LoginFormData } from '@/lib/validations';
 import { signIn } from '@/lib/auth-client';
+import { apiClient } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,7 +21,6 @@ import {
 } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
-import { setAuthToken } from '@/lib/auth-token';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,43 +38,37 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // 1️⃣ Sign in
-      // const res = await signIn.email({
-      //   email: data.email,
-      //   password: data.password,
-      // });
-      const res = await fetch('https://skill-bridge-backend-sooty.vercel.app/api/auth/sign-in/email', {
-  method: 'POST',
-  credentials: 'include', // CRITICAL
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({ email: data.email, password: data.password })
-
-});
-console.log(res);
-      // if (res.data) {
-      //   console.log('Session after sign-in:', res.data);
-        
-        // 2️⃣ Extract token and set in HttpOnly cookie via server action
-      //   const token = res.data?.token || res.data.token;
-      //   if (token) {
-      //     await setAuthToken(token);
-      //   }
-      // }
-      
+      // 1️⃣ Sign in → sets cookie
+     const res = await signIn.email({
+        email: data.email,
+        password: data.password,
+      });
       console.log('Sign-in response:', res);
-      
+        window.location.href = '/season'; // Temporary hard redirect to test session handling
+      // 2️⃣ Fetch role from backend
+      let role: 'STUDENT' | 'TUTOR' | 'ADMIN' = 'STUDENT';
+
+      try {
+        const profileRes = await apiClient.get('/users/profile');
+        role = profileRes?.data?.role || 'STUDENT';
+      } catch {
+        // fallback is fine
+      }
+
       toast.success('Login successful!');
-      
-      // 3️⃣ Refresh router to pick up new cookie
+
+      // 3️⃣ Invalidate router cache
       router.refresh();
-      
-      // 4️⃣ Redirect
-      router.push('/season');
-      
+
+      // 4️⃣ HARD REDIRECT (THIS IS THE FIX)
+      if (role === 'TUTOR') {
+        window.location.href = '/tutor/dashboard';
+      } else if (role === 'ADMIN') {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/dashboard';
+      }
     } catch (error) {
-      console.error('Login error:', error);
       toast.error('Invalid email or password');
     } finally {
       setIsLoading(false);
