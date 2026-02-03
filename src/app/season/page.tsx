@@ -14,6 +14,7 @@ export default async function Page() {
             Cookie: cookieStore.toString(),
           },
           cache: 'no-store',
+          credentials: 'include' 
         }
       );
 
