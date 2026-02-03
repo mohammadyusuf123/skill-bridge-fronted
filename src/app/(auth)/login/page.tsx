@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { cookies } from 'next/headers';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,7 +44,11 @@ export default function LoginPage() {
         email: data.email,
         password: data.password,
       });
+      if (res.data) {
+        cookies().set('session', res.data.token);
+      }
       console.log('Sign-in response:', res);
+        router.push('/season');
         // window.location.href = '/season'; // Temporary hard redirect to test session handling
       // 2️⃣ Fetch role from backend
       let role: 'STUDENT' | 'TUTOR' | 'ADMIN' = 'STUDENT';
