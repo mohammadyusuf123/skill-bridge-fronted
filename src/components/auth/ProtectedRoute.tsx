@@ -1,67 +1,65 @@
-'use client';
 
-import { useSession } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
-import type { UserRole } from '@/types';
+// import { useRouter } from 'next/navigation';
+// import { useEffect } from 'react';
+// import { Loader2 } from 'lucide-react';
+// import type { UserRole } from '@/types';
+import { cookies } from 'next/headers';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: UserRole;
+  // requiredRole?: UserRole;
   requireProfile?: boolean;
 }
 
-export default function ProtectedRoute({
+export default  async function ProtectedRoute({
   children,
-  requiredRole,
+  // requiredRole,
   requireProfile = false
 }: ProtectedRouteProps) {
-  const { data: session, isPending } = useSession();
-  console.log('Session in ProtectedRoute:', session);
-  const router = useRouter();
-  // Add debugging
-  useEffect(() => {
-   fetch('https://skill-bridge-backend-sooty.vercel.app/api/auth/get-session', {
-  credentials: 'include'
+  // const router = useRouter();
+const CookieStore= await cookies();
+  const res= await fetch('https://skill-bridge-backend-sooty.vercel.app/api/auth/get-session', {
+  headers: {
+     Cookie: CookieStore.toString(),
+  },
+  credentials: 'include',
 })
-  .then(r => r.json())
-  .then(data => console.log('Direct fetch result:', data))
-  .catch(err => console.error('Fetch error:', err))
-  }, [session, isPending]);
+  const session = await res.json();
+ 
+  console.log('Session in ProtectedRoute:', session);
 
-  useEffect(() => {
-    if (isPending) return; // Wait for loading to finish
+  // useEffect(() => {
+  //   if (isPending) return; // Wait for loading to finish
 
-    if (!session) {
-      console.log('No session found, redirecting to login');
-      router.push('/login');
-      return;
-    }
+  //   if (!session) {
+  //     console.log('No session found, redirecting to login');
+  //     router.push('/login');
+  //     return;
+  //   }
 
-    // Check role requirements
-    if (requiredRole && (session as any).role !== requiredRole) {
-      const redirectMap: Record<UserRole, string> = {
-        STUDENT: '/dashboard',
-        TUTOR: '/tutor/dashboard',
-        ADMIN: '/admin',
-      };
-      router.push(redirectMap[(session as any).role as UserRole] || '/');
-    }
-  }, [session, isPending, requiredRole, router]);
+  //   // Check role requirements
+  //   if (requiredRole && (session as any).role !== requiredRole) {
+  //     const redirectMap: Record<UserRole, string> = {
+  //       STUDENT: '/dashboard',
+  //       TUTOR: '/tutor/dashboard',
+  //       ADMIN: '/admin',
+  //     };
+  //     router.push(redirectMap[(session as any).role as UserRole] || '/');
+  //   }
+  // }, [session, isPending, requiredRole, router]);
 
 //  [session, isPending, requiredRole, router]
-  if (isPending) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  // if (isPending) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  //     </div>
+  //   );
+  // }
 
-  if (!session) {
-    return null;
-  }
+  // if (!session) {
+  //   return null;
+  // }
 
   return <>{children}</>;
 }
