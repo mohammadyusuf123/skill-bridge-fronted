@@ -45,7 +45,7 @@ export default function LoginPage() {
         password: data.password,
       });
       if (res.data) {
-        cookies().set('session', res.data.token);
+        console.log('Session after sign-in:', res.data);
       }
       console.log('Sign-in response:', res);
         router.push('/season');
