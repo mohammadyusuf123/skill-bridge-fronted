@@ -20,17 +20,22 @@ export default function ProtectedRoute({
   const { data: session, isPending } = useSession();
   console.log('Session in ProtectedRoute:', session);
   const router = useRouter();
+  // Add debugging
+  useEffect(() => {
+    console.log('Session state:', { session, isPending  });
+  }, [session, isPending]);
 
   useEffect(() => {
-    // Only redirect to login if we're done loading AND there's no session
-    if (!isPending && !session) {
+    if (isPending) return; // Wait for loading to finish
+
+    if (!session) {
+      console.log('No session found, redirecting to login');
       router.push('/login');
       return;
     }
 
-    // Only check role requirements if we have a session
-    if (!isPending && session && requiredRole && (session as any).role !== requiredRole) {
-      // Redirect based on user role
+    // Check role requirements
+    if (requiredRole && (session as any).role !== requiredRole) {
       const redirectMap: Record<UserRole, string> = {
         STUDENT: '/dashboard',
         TUTOR: '/tutor/dashboard',
@@ -38,7 +43,6 @@ export default function ProtectedRoute({
       };
       router.push(redirectMap[(session as any).role as UserRole] || '/');
     }
-   
   }, [session, isPending, requiredRole, router]);
 
 //  [session, isPending, requiredRole, router]
