@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  async rewrites() {
+ async rewrites() {
     return [
       {
-        source: "/api/auth/:path*",
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/:path*`,
+        source: '/api/:path*',
+        destination: 'https://skill-bridge-backend-production-27ac.up.railway.app/api/:path*',
       },
     ];
   },
