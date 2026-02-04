@@ -1,6 +1,6 @@
 import { createAuthClient } from "better-auth/react";
 import { usernameClient } from 'better-auth/client/plugins'
-const API_URL = 'https://skill-bridge-backend-sooty.vercel.app/api/auth' 
+const API_URL = 'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth' 
 const APP_NAME = 'Skill Bridge'
 export const authClient = createAuthClient({
    baseURL: API_URL,
