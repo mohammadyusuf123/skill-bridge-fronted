@@ -2,40 +2,42 @@ import { cookies } from 'next/headers';
 import React from 'react';
 
 export default async function Page() {
-
   const getSession = async () => {
     try {
-        const cookieStore = await cookies();
-        console.log('Cookies in getSession:', cookieStore);
+      const cookieStore = await cookies();
+      
+      // ✅ Convert cookies to proper Cookie header format
+      const cookieHeader = cookieStore
+        .getAll()
+        .map((cookie) => `${cookie.name}=${cookie.value}`)
+        .join('; ');
+
+      console.log('Cookie header:', cookieHeader);
+
       const res = await fetch(
-        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/get-session',
+        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/session', // ✅ Use /session not /get-session
         {
           headers: {
-            Cookie: cookieStore.toString(),
+            Cookie: cookieHeader, // ✅ Properly formatted cookie string
           },
           cache: 'no-store',
-          credentials: 'include' 
         }
       );
 
       if (!res.ok) {
+        const errorText = await res.text();
+        console.error('Session fetch failed:', res.status, errorText);
         throw new Error('Failed to fetch session');
       }
 
       const session = await res.json();
-
-      if (!session) {
-        return { data: null, error: { message: 'Session is missing.' } };
-      }
-
       return { data: session, error: null };
     } catch (err) {
-      console.error(err);
-      return { data: null, error: { message: 'Something went wrong' } };
+      console.error('Session error:', err);
+      return { data: null, error: { message: 'Session is missing.' } };
     }
   };
 
-  // ✅ MUST await here
   const session = await getSession();
 
   console.log('Session in session page:', session);
@@ -43,7 +45,7 @@ export default async function Page() {
   return (
     <div>
       <pre>{JSON.stringify(session, null, 2)}</pre>
-      This is from session
+      <p>This is from session</p>
     </div>
   );
 }
