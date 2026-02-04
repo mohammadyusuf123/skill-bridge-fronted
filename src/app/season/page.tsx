@@ -8,7 +8,7 @@ export default async function Page() {
         const cookieStore = await cookies();
         console.log('Cookies in getSession:', cookieStore);
       const res = await fetch(
-        'https://skill-bridge-backend-sooty.vercel.app/api/auth/get-session',
+        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/get-session',
         {
           headers: {
             Cookie: cookieStore.toString(),
