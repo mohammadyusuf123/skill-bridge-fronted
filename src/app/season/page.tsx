@@ -2,41 +2,43 @@ import { cookies } from 'next/headers';
 import React from 'react';
 
 export default async function Page() {
-  const getSession = async () => {
-    try {
-      const cookieStore = await cookies();
-      
-      // ✅ Convert cookies to proper Cookie header format
-      const cookieHeader = cookieStore
-        .getAll()
-        .map((cookie) => `${cookie.name}=${cookie.value}`)
-        .join('; ');
-
-      console.log('Cookie header:', cookieHeader);
-
-      const res = await fetch(
-        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/session', // ✅ Use /session not /get-session
-        {
+async function getSession() {
+  try {
+    // TRY BOTH ENDPOINTS
+    const endpoints = [
+      'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/session',
+      'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/get-session'
+    ];
+    
+    for (const endpoint of endpoints) {
+      try {
+        const response = await fetch(endpoint, {
+          method: 'GET',
+          credentials: 'include', // CRITICAL
           headers: {
-            Cookie: cookieHeader, // ✅ Properly formatted cookie string
-          },
-          cache: 'no-store',
+            'Accept': 'application/json',
+            'Origin': 'https://skill-bridge-fronted-production.up.railway.app'
+          }
+        });
+        
+        console.log(`Trying ${endpoint}:`, response.status);
+        
+        if (response.ok) {
+          const session = await response.json();
+          console.log('Session found at:', endpoint, session);
+          return session;
         }
-      );
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error('Session fetch failed:', res.status, errorText);
-        throw new Error('Failed to fetch session');
+      } catch (error) {
+        console.log(`Failed at ${endpoint}:`, error);
       }
-
-      const session = await res.json();
-      return { data: session, error: null };
-    } catch (err) {
-      console.error('Session error:', err);
-      return { data: null, error: { message: 'Session is missing.' } };
     }
-  };
+    
+    throw new Error('No session endpoint worked');
+  } catch (error) {
+    console.error('Session fetch failed:', error);
+    return { data: null, error: { message: 'Session is missing.' } };
+  }
+}
 
   const session = await getSession();
 
