@@ -86,7 +86,7 @@ export default function LoginPage() {
       console.log('Session check after login:', sessionResponse.status);
       
       // Force redirect (bypass Next.js router)
-      window.location.href = '/season';
+      // window.location.href = '/season';
       
     } catch (error: any) {
       console.error('Login error:', error);
