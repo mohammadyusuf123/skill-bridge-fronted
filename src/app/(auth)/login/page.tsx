@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { signIn } from '@/lib/auth-client';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,69 +34,33 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
+// In your login page, replace the onSubmit function with this:
+const onSubmit = async (data: LoginFormData) => {
+  setIsLoading(true);
 
-    try {
-      console.log('Attempting sign in...');
-      
-      // Direct fetch to backend (for debugging)
-      const response = await fetch(
-        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/sign-in/email',
-        {
-          method: 'POST',
-          credentials: 'include', // CRITICAL
-          headers: {
-            'Content-Type': 'application/json',
-            'Origin': 'https://skill-bridge-fronted-production.up.railway.app'
-          },
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-            callbackURL: 'https://skill-bridge-fronted-production.up.railway.app/season'
-          })
-        }
-      );
-      
-      console.log('Sign-in response status:', response.status);
-      console.log('Sign-in response headers:', response.headers);
-      
-      const result = await response.json();
-      console.log('Sign-in result:', result);
-      
-      if (!response.ok) {
-        throw new Error(result.error || 'Sign in failed');
-      }
-      
-      toast.success('Login successful!');
-      
-      // Wait a moment for cookies to be set
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Test if session cookie was set
-      const sessionResponse = await fetch(
-        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/get-session',
-        {
-          credentials: 'include',
-          headers: {
-            'Origin': 'https://skill-bridge-fronted-production.up.railway.app'
-          }
-        }
-      );
-      
-      console.log('Session check after login:', sessionResponse.status);
-      
-      // Force redirect (bypass Next.js router)
-      window.location.href = '/season';
-      
-    } catch (error: any) {
-      console.error('Login error:', error);
-      toast.error(error.message || 'Invalid email or password');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  try {
+    // ✅ Use the authClient's signIn method
+    const result = await signIn.email({
+      email: data.email,
+      password: data.password,
+    });
+    
+    console.log('Sign-in result:', result);
+    
+    // The authClient should handle session automatically
+    // Wait a moment for cookies to sync
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Force redirect (Next.js router might have caching issues)
+    window.location.href = '/season';
+    
+  } catch (error: any) {
+    console.error('Login error:', error);
+    toast.error(error?.message || 'Invalid email or password');
+  } finally {
+    setIsLoading(false);
+  }
+};
   return (
     <div className="container flex items-center justify-center min-h-screen py-10">
       <Card className="w-full max-w-md">
