@@ -1,3 +1,4 @@
+// app/login/page.tsx - Updated
 'use client';
 
 import { useState } from 'react';
@@ -6,8 +7,6 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, LoginFormData } from '@/lib/validations';
-import { signIn } from '@/lib/auth-client';
-import { apiClient } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -38,38 +37,60 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // 1️⃣ Sign in → sets cookie
-     const res = await signIn.email({
-        email: data.email,
-        password: data.password,
-      });
-      console.log('Sign-in response:', res);
-        window.location.href = '/season'; // Temporary hard redirect to test session handling
-      // 2️⃣ Fetch role from backend
-      // let role: 'STUDENT' | 'TUTOR' | 'ADMIN' = 'STUDENT';
-
-      // try {
-      //   const profileRes = await apiClient.get('/users/profile');
-      //   role = profileRes?.data?.role || 'STUDENT';
-      // } catch {
-      //   // fallback is fine
-      // }
-
+      console.log('Attempting sign in...');
+      
+      // Direct fetch to backend (for debugging)
+      const response = await fetch(
+        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/signin/email',
+        {
+          method: 'POST',
+          credentials: 'include', // CRITICAL
+          headers: {
+            'Content-Type': 'application/json',
+            'Origin': 'https://skill-bridge-fronted-production.up.railway.app'
+          },
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password,
+            callbackURL: 'https://skill-bridge-fronted-production.up.railway.app/season'
+          })
+        }
+      );
+      
+      console.log('Sign-in response status:', response.status);
+      console.log('Sign-in response headers:', response.headers);
+      
+      const result = await response.json();
+      console.log('Sign-in result:', result);
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Sign in failed');
+      }
+      
       toast.success('Login successful!');
-
-      // 3️⃣ Invalidate router cache
-      router.refresh();
-
-      // 4️⃣ HARD REDIRECT (THIS IS THE FIX)
-      // if (role === 'TUTOR') {
-      //   window.location.href = '/tutor/dashboard';
-      // } else if (role === 'ADMIN') {
-      //   window.location.href = '/admin';
-      // } else {
-      //   window.location.href = '/dashboard';
-      // }
-    } catch (error) {
-      toast.error('Invalid email or password');
+      
+      // Wait a moment for cookies to be set
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Test if session cookie was set
+      const sessionResponse = await fetch(
+        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/session',
+        {
+          credentials: 'include',
+          headers: {
+            'Origin': 'https://skill-bridge-fronted-production.up.railway.app'
+          }
+        }
+      );
+      
+      console.log('Session check after login:', sessionResponse.status);
+      
+      // Force redirect (bypass Next.js router)
+      window.location.href = '/season';
+      
+    } catch (error: any) {
+      console.error('Login error:', error);
+      toast.error(error.message || 'Invalid email or password');
     } finally {
       setIsLoading(false);
     }
@@ -135,6 +156,20 @@ export default function LoginPage() {
               Sign up
             </Link>
           </div>
+          
+          {/* Debug button */}
+          <button 
+            onClick={async () => {
+              const res = await fetch(
+                'https://skill-bridge-backend-production-27ac.up.railway.app/api/cookie-debug',
+                { credentials: 'include' }
+              );
+              console.log('Debug:', await res.json());
+            }}
+            className="text-xs text-gray-500 hover:text-gray-700"
+          >
+            Test Cookie Connection
+          </button>
         </CardFooter>
       </Card>
     </div>
