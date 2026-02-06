@@ -12,8 +12,7 @@ class ApiClient {
       baseURL: BACKEND_URL, // Changed from "/api" to full backend URL
       withCredentials: true,
       headers: {
-        'Content-Type': 'application/json',
-        'Origin': 'https://skill-bridge-fronted-production.up.railway.app' // Optional but helpful
+        'Content-Type': 'application/json'
       },
     });
 
