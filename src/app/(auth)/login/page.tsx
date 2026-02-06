@@ -74,7 +74,7 @@ export default function LoginPage() {
       
       // Test if session cookie was set
       const sessionResponse = await fetch(
-        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/session',
+        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/get-session',
         {
           credentials: 'include',
           headers: {
@@ -86,7 +86,7 @@ export default function LoginPage() {
       console.log('Session check after login:', sessionResponse.status);
       
       // Force redirect (bypass Next.js router)
-      // window.location.href = '/season';
+      window.location.href = '/season';
       
     } catch (error: any) {
       console.error('Login error:', error);
