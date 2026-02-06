@@ -1,21 +1,23 @@
 
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ApiResponse } from '@/types';
-const BASE_URL = "/api";
+// ✅ Use your actual backend URL
+const BACKEND_URL = 'https://skill-bridge-backend-production-27ac.up.railway.app';
+
 class ApiClient {
   private client: AxiosInstance;
+
   constructor() {
-    // better-auth manages auth via httpOnly cookies.  withCredentials ensures
-    // the browser sends them on every cross-origin request automatically —
-    // no manual token / sessionStorage plumbing needed.
     this.client = axios.create({
-      baseURL: BASE_URL,
+      baseURL: BACKEND_URL, // Changed from "/api" to full backend URL
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
+        'Origin': 'https://skill-bridge-fronted-production.up.railway.app' // Optional but helpful
       },
     });
-    // Response interceptor — redirect to login on 401
+
+    // Response interceptor
     this.client.interceptors.response.use(
       (response) => response,
       (error: AxiosError<ApiResponse>) => {
