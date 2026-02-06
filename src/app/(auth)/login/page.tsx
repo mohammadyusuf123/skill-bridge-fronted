@@ -52,7 +52,7 @@ const onSubmit = async (data: LoginFormData) => {
     await new Promise(resolve => setTimeout(resolve, 500));
     
     // Force redirect (Next.js router might have caching issues)
-    window.location.href = '/season';
+    window.location.href = '/dashboard';
     
   } catch (error: any) {
     console.error('Login error:', error);
