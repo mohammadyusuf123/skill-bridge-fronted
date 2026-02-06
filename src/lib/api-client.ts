@@ -2,7 +2,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ApiResponse } from '@/types';
 // ✅ Use your actual backend URL
-const BACKEND_URL = 'https://skill-bridge-backend-production-27ac.up.railway.app';
+const BACKEND_URL = 'https://skill-bridge-backend-production-27ac.up.railway.app/api';
 
 class ApiClient {
   private client: AxiosInstance;

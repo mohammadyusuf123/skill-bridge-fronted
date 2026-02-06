@@ -24,6 +24,7 @@ export default function FindTutorsPage() {
 
   // Load tutors - will show ALL initially since filters are reset
   const { data, isLoading } = useTutors();
+  console.log('Tutors API Response:', data);
   const { data: categoriesData } = useCategories();
 
   const categories = categoriesData?.data || [];
