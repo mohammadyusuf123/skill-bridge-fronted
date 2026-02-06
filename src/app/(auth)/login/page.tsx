@@ -41,7 +41,7 @@ export default function LoginPage() {
       
       // Direct fetch to backend (for debugging)
       const response = await fetch(
-        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/signin/email',
+        'https://skill-bridge-backend-production-27ac.up.railway.app/api/auth/sign-in/email',
         {
           method: 'POST',
           credentials: 'include', // CRITICAL
