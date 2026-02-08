@@ -12,10 +12,10 @@ export default function Navbar() {
 
   return (
     <header className="border-b bg-background sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <div className="container mx-auto px-4 py-2 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <GraduationCap className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold text-primary">TutorPlatform</span>
+          <span className="text-2xl font-bold text-primary">Tutor<span className="text-foreground">Platform</span> </span>
         </Link>
 
         {/* Desktop Navigation */}

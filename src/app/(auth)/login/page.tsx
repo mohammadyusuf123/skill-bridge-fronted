@@ -122,19 +122,6 @@ const onSubmit = async (data: LoginFormData) => {
             </Link>
           </div>
           
-          {/* Debug button */}
-          <button 
-            onClick={async () => {
-              const res = await fetch(
-                'https://skill-bridge-backend-production-27ac.up.railway.app/api/cookie-debug',
-                { credentials: 'include' }
-              );
-              console.log('Debug:', await res.json());
-            }}
-            className="text-xs text-gray-500 hover:text-gray-700"
-          >
-            Test Cookie Connection
-          </button>
         </CardFooter>
       </Card>
     </div>
