@@ -708,7 +708,7 @@ export default function Home() {
               gradient="bg-gradient-to-br from-gray-800 to-gray-900"
             />
             <BenefitCard
-              icon=""
+              icon="🧑‍🏫"
               title={
                 <div>
                   <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-bold">Super</span>
@@ -737,7 +737,7 @@ export default function Home() {
               gradient="bg-gradient-to-br from-gray-800 to-gray-900"
             />
             <BenefitCard
-              icon=""
+              icon="🤖"
               title={
                 <div>
                   <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent font-bold">Super</span>
@@ -746,7 +746,8 @@ export default function Home() {
                 </div>
               }
               description=""
-              gradient="bg-gradient-to-br from-pink-600 via-purple-600 to-indigo-600"
+                 gradient="bg-gradient-to-br from-gray-800 to-gray-900"
+              // gradient="bg-gradient-to-br from-pink-600 via-purple-600 to-indigo-600"
             />
           </motion.div>
         </div>

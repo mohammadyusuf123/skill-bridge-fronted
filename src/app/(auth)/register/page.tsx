@@ -72,11 +72,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="container flex items-center justify-center min-h-screen py-10">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-r from-gray-800 via-gray-900 to-pink-900/50">
+      <Card className="w-full max-w-md mx-auto">
         <CardHeader>
-          <CardTitle className="text-2xl">Create Account</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl text-center">Create Account</CardTitle>
+          <CardDescription className="text-center">
             Get started with your learning journey today
           </CardDescription>
         </CardHeader>
@@ -187,6 +187,7 @@ export default function RegisterPage() {
           </div>
         </CardFooter>
       </Card>
+      
     </div>
   );
 }
