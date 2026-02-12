@@ -27,7 +27,7 @@ export default function SessionsCard({ upcomingBookings, onCancel }: UpcomingSes
                 <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/30 group-hover:scale-110 transition-transform duration-300">
                   <Calendar className="h-5 w-5 text-white" />
                 </div>
-                <CardTitle className="text-2xl lg:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300">
+                <CardTitle className="text-xl lg:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300">
                   Upcoming Sessions
                 </CardTitle>
               </div>
@@ -84,7 +84,7 @@ export default function SessionsCard({ upcomingBookings, onCancel }: UpcomingSes
                 {/* Icon Container */}
                 <div className="relative p-8 rounded-3xl bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-950/50 dark:via-teal-950/50 dark:to-cyan-950/50 border-2 border-emerald-200/50 dark:border-emerald-800/50 shadow-2xl backdrop-blur-sm">
                   <div className="relative">
-                    <BookOpen className="h-16 w-16 sm:h-20 sm:w-20 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
+                    <BookOpen className="h-6 w-6 sm:h-10 sm:w-10 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
                     {/* Decorative Elements */}
                     <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 opacity-20 animate-bounce" style={{ animationDelay: '0.5s' }} />
                     <div className="absolute -bottom-2 -left-2 h-6 w-6 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 opacity-20 animate-bounce" style={{ animationDelay: '1s' }} />
@@ -105,7 +105,7 @@ export default function SessionsCard({ upcomingBookings, onCancel }: UpcomingSes
               {/* Action Button */}
               <button
                 onClick={() => router.push('/find-tutors')}
-                className="group/btn relative inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-600 text-white font-bold shadow-lg shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 transition-all duration-300 hover:-translate-y-1 active:translate-y-0 overflow-hidden"
+                className="group/btn relative inline-flex items-center gap-2.5 px-6 py-3 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-600 text-white font-bold shadow-lg shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 transition-all duration-300 hover:-translate-y-1 active:translate-y-0 overflow-hidden"
               >
                 {/* Button Shine Effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-1000" />
