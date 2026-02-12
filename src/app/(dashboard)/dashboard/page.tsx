@@ -8,6 +8,8 @@ import { useCancelBooking } from '@/hooks/useApi';
 import React from "react";
 import StatsCard from '@/components/ui/statsCard';
 import { useRouter } from 'next/navigation';
+import SessionsCard from '@/components/ui/sessionsCard';
+import RecentBookingsCard from '@/components/ui/recentBookingCard';
 
 
 
@@ -108,104 +110,19 @@ export default function StudentDashboardPage() {
         </div>
 
         {/* Upcoming Bookings - Enhanced Design */}
-        <Card className="rounded-2xl border-slate-200 dark:border-slate-800 shadow-lg animate-slide-up overflow-hidden">
-          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/50 dark:to-teal-950/50 border border-emerald-200 dark:border-emerald-800">
-            <CardHeader className="border-b border-slate-200 dark:border-slate-800">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                    Upcoming Sessions
-                  </CardTitle>
-                  <CardDescription className="text-slate-600 dark:text-slate-400 mt-1">
-                    Your confirmed sessions
-                  </CardDescription>
-                </div>
-                {dashboard?.upcomingBookings && dashboard.upcomingBookings.length > 0 && (
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/50 dark:to-teal-950/50 border border-emerald-200 dark:border-emerald-800">
-                    <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
-                    <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
-                      {dashboard.upcomingBookings.length} Active
-                    </span>
-                  </div>
-                )}
-              </div>
-            </CardHeader>
-          </div>
-          <CardContent className="p-6">
-            {dashboard?.upcomingBookings && dashboard.upcomingBookings.length > 0 ? (
-              <div className="grid gap-4 md:grid-cols-2">
-                {dashboard.upcomingBookings.map((booking, index) => (
-                  <div
-                    key={booking.id}
-                    className="animate-fade-in"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <BookingCard
-                      booking={booking}
-                      userRole="STUDENT"
-                      onCancel={() => cancelBooking.mutate({ bookingId: booking.id })}
-                    />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-16 px-4">
-                <div className="max-w-sm mx-auto space-y-4">
-                  <div className="relative inline-block">
-                    <div className="absolute inset-0 bg-blue-500/20 blur-2xl rounded-full" />
-                    <div className="relative p-6 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/50 dark:to-teal-950/50 border border-emerald-200 dark:border-emerald-800">
-                      <BookOpen className="h-16 w-16 mx-auto text-teal-600" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-                      No upcoming sessions
-                    </h3>
-                    <p className="text-slate-600 dark:text-slate-400">
-                      Book a session with a tutor to get started on your learning journey!
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => router.push('/find-tutors')} className="mt-4 px-6 py-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5">
-                    Browse Tutors
-                  </button>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+           <SessionsCard 
+          upcomingBookings={dashboard?.upcomingBookings}
+          onCancel={(bookingId) => cancelBooking.mutate({ bookingId })}
+        />
+      
 
         {/* Recent Bookings - Enhanced Design */}
-        {dashboard?.recentBookings && dashboard.recentBookings.length > 0 && (
-          <Card className="rounded-2xl border-slate-200 dark:border-slate-800 shadow-lg animate-slide-up overflow-hidden">
-            <div className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-900 dark:to-slate-900/50">
-              <CardHeader className="border-b border-slate-200 dark:border-slate-800">
-                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  Recent Activity
-                </CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400 mt-1">
-                  Your recent bookings and sessions
-                </CardDescription>
-              </CardHeader>
-            </div>
-            <CardContent className="p-6">
-              <div className="grid gap-4 md:grid-cols-2">
-                {dashboard.recentBookings.slice(0, 4).map((booking, index) => (
-                  <div
-                    key={booking.id}
-                    className="animate-fade-in"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <BookingCard
-                      booking={booking}
-                      userRole="STUDENT"
-                    />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {/* Recent Bookings Card - Reusable Component */}
+        <RecentBookingsCard
+          recentBookings={dashboard?.recentBookings}
+          maxItems={4}
+          showEmptyState={false}
+        />
       </div>
 
       <style jsx global>{`
@@ -238,7 +155,16 @@ export default function StudentDashboardPage() {
         .animate-slide-up {
           animation: slide-up 0.8s ease-out forwards;
         }
+
+        /* Mobile optimizations */
+        @media (max-width: 640px) {
+          .animate-fade-in,
+          .animate-slide-up {
+            animation-duration: 0.4s;
+          }
+        }
       `}</style>
     </div>
   );
 }
+        
