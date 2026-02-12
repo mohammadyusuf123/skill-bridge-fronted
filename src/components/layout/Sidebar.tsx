@@ -53,7 +53,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 border-r bg-muted/40 flex flex-col h-screen ">
+    <aside className="w-64 border-r bg-muted/40 flex flex-col h-screen">
       <div className="p-6 border-b">
         <Link href="/" className="flex items-center gap-2">
           <GraduationCap className="h-8 w-8 text-primary" />
