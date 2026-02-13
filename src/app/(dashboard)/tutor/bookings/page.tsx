@@ -2,11 +2,25 @@
 
 import { useBookings, useCompleteBooking, useCancelBooking } from '@/hooks/useApi';
 import BookingCard from '@/components/booking/BookingCard';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, BookOpen } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Loader2, 
+  BookOpen,
+  GraduationCap,
+  Calendar,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  AlertCircle,
+  Filter,
+  TrendingUp,
+  Users
+} from 'lucide-react';
 import { useState } from 'react';
 import type { BookingStatus } from '@/types';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function TutorBookingsPage() {
   const [statusFilter, setStatusFilter] = useState<BookingStatus | 'ALL'>('ALL');
@@ -27,95 +41,253 @@ export default function TutorBookingsPage() {
     cancelled: bookings.filter(b => b.status === 'CANCELLED').length,
   };
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex flex-col items-center justify-center h-96 gap-4">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="text-muted-foreground">Loading your sessions...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">My Sessions</h1>
-        <p className="text-muted-foreground">
-          Manage your tutoring sessions and mark them as complete
-        </p>
-      </div>
+    <div className="space-y-8 pb-8">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500 p-8 text-white shadow-xl"
+      >
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24" />
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <GraduationCap className="h-6 w-6" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold">My Sessions</h1>
+              <p className="text-white/80">Manage your tutoring sessions and student bookings</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
-      {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-5">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground">Total Sessions</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-            <p className="text-xs text-muted-foreground">Pending</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-blue-600">{stats.confirmed}</div>
-            <p className="text-xs text-muted-foreground">Upcoming</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
-            <p className="text-xs text-muted-foreground">Completed</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-red-600">{stats.cancelled}</div>
-            <p className="text-xs text-muted-foreground">Cancelled</p>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Stats Cards */}
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="grid gap-4 md:grid-cols-5"
+      >
+        <motion.div variants={item}>
+          <Card 
+            className={`border-none shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden cursor-pointer ${
+              statusFilter === 'ALL' ? 'ring-2 ring-primary' : ''
+            }`}
+            onClick={() => setStatusFilter('ALL')}
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500" />
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardDescription className="text-sm font-medium">Total Sessions</CardDescription>
+                <div className="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                  <BookOpen className="h-5 w-5 text-emerald-600" />
+                </div>
+              </div>
+              <CardTitle className="text-4xl font-bold">{stats.total}</CardTitle>
+              <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                <TrendingUp className="h-3 w-3" />
+                <span>All sessions</span>
+              </div>
+            </CardHeader>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={item}>
+          <Card 
+            className={`border-none shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden cursor-pointer ${
+              statusFilter === 'PENDING' ? 'ring-2 ring-yellow-500' : ''
+            }`}
+            onClick={() => setStatusFilter('PENDING')}
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-500/10 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500" />
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardDescription className="text-sm font-medium">Pending</CardDescription>
+                <div className="h-10 w-10 rounded-lg bg-yellow-500/10 flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-yellow-600" />
+                </div>
+              </div>
+              <CardTitle className="text-4xl font-bold text-yellow-600">{stats.pending}</CardTitle>
+              <div className="flex items-center gap-1 text-xs text-yellow-600 mt-1">
+                <AlertCircle className="h-3 w-3" />
+                <span>Awaiting action</span>
+              </div>
+            </CardHeader>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={item}>
+          <Card 
+            className={`border-none shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden cursor-pointer ${
+              statusFilter === 'CONFIRMED' ? 'ring-2 ring-blue-500' : ''
+            }`}
+            onClick={() => setStatusFilter('CONFIRMED')}
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500" />
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardDescription className="text-sm font-medium">Confirmed</CardDescription>
+                <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <Calendar className="h-5 w-5 text-blue-600" />
+                </div>
+              </div>
+              <CardTitle className="text-4xl font-bold text-blue-600">{stats.confirmed}</CardTitle>
+              <div className="flex items-center gap-1 text-xs text-blue-600 mt-1">
+                <Users className="h-3 w-3" />
+                <span>Upcoming sessions</span>
+              </div>
+            </CardHeader>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={item}>
+          <Card 
+            className={`border-none shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden cursor-pointer ${
+              statusFilter === 'COMPLETED' ? 'ring-2 ring-green-500' : ''
+            }`}
+            onClick={() => setStatusFilter('COMPLETED')}
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/10 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500" />
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardDescription className="text-sm font-medium">Completed</CardDescription>
+                <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                </div>
+              </div>
+              <CardTitle className="text-4xl font-bold text-green-600">{stats.completed}</CardTitle>
+              <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
+                <CheckCircle2 className="h-3 w-3" />
+                <span>Finished sessions</span>
+              </div>
+            </CardHeader>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={item}>
+          <Card 
+            className={`border-none shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden cursor-pointer ${
+              statusFilter === 'CANCELLED' ? 'ring-2 ring-red-500' : ''
+            }`}
+            onClick={() => setStatusFilter('CANCELLED')}
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/10 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500" />
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardDescription className="text-sm font-medium">Cancelled</CardDescription>
+                <div className="h-10 w-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+                  <XCircle className="h-5 w-5 text-red-600" />
+                </div>
+              </div>
+              <CardTitle className="text-4xl font-bold text-red-600">{stats.cancelled}</CardTitle>
+              <div className="flex items-center gap-1 text-xs text-red-600 mt-1">
+                <XCircle className="h-3 w-3" />
+                <span>Not completed</span>
+              </div>
+            </CardHeader>
+          </Card>
+        </motion.div>
+      </motion.div>
 
       {/* Tabs */}
-      <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
-        <TabsList>
-          <TabsTrigger value="ALL">All ({stats.total})</TabsTrigger>
-          <TabsTrigger value="PENDING">Pending ({stats.pending})</TabsTrigger>
-          <TabsTrigger value="CONFIRMED">Confirmed ({stats.confirmed})</TabsTrigger>
-          <TabsTrigger value="COMPLETED">Completed ({stats.completed})</TabsTrigger>
-          <TabsTrigger value="CANCELLED">Cancelled ({stats.cancelled})</TabsTrigger>
-        </TabsList>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+    
 
-        <TabsContent value={statusFilter} className="mt-6">
-          {filteredBookings.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2">
-              {filteredBookings.map((booking) => (
-                <BookingCard
-                  key={booking.id}
-                  booking={booking}
-                  userRole="TUTOR"
-                  onComplete={(id) => completeBooking.mutate({ bookingId: id })}
-                  onCancel={(id) => cancelBooking.mutate({ bookingId: id })}
-                />
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-lg text-muted-foreground">No sessions found</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {statusFilter === 'ALL' 
-                    ? 'You don\'t have any sessions yet' 
-                    : `No ${statusFilter.toLowerCase()} sessions`}
-                </p>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-      </Tabs>
+        {/* Content */}
+        <div className="mt-6">
+          <AnimatePresence mode="wait">
+            {filteredBookings.length > 0 ? (
+              <motion.div
+                key={`${statusFilter}-list`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="grid gap-4 md:grid-cols-2"
+              >
+                {filteredBookings.map((booking, index) => (
+                  <motion.div
+                    key={booking.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                  >
+                    <BookingCard
+                      booking={booking}
+                      userRole="TUTOR"
+                      onComplete={(id) => completeBooking.mutate({ bookingId: id })}
+                      onCancel={(id) => cancelBooking.mutate({ bookingId: id })}
+                    />
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Card className="border-dashed border-2">
+                  <CardContent className="flex flex-col items-center justify-center py-16">
+                    <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                      {statusFilter === 'PENDING' ? <Clock className="h-8 w-8 text-muted-foreground" /> :
+                       statusFilter === 'CONFIRMED' ? <Calendar className="h-8 w-8 text-muted-foreground" /> :
+                       statusFilter === 'COMPLETED' ? <CheckCircle2 className="h-8 w-8 text-muted-foreground" /> :
+                       statusFilter === 'CANCELLED' ? <XCircle className="h-8 w-8 text-muted-foreground" /> :
+                       <BookOpen className="h-8 w-8 text-muted-foreground" />}
+                    </div>
+                    <p className="text-lg font-semibold">No sessions found</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {statusFilter === 'ALL' 
+                        ? 'You don\'t have any sessions yet' 
+                        : `No ${statusFilter.toLowerCase()} sessions`}
+                    </p>
+                    {statusFilter === 'ALL' && (
+                      <p className="text-xs text-muted-foreground mt-3">
+                        Students will book sessions with you through your tutor profile
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
     </div>
   );
 }
