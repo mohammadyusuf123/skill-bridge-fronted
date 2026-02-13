@@ -26,12 +26,12 @@ export default function ProtectedRoute({
 
   useEffect(() => {
     // Debug log
-    console.log('ProtectedRoute debug:', {
-      session,
-      hasUser: !!user,
-      userRole: user?.role,
-      isPending
-    });
+    // console.log('ProtectedRoute debug:', {
+    //   session,
+    //   hasUser: !!user,
+    //   userRole: user?.role,
+    //   isPending
+    // });
 
     // Only redirect to login if we're done loading AND there's no user
     if (!isPending && !user) {
@@ -52,7 +52,6 @@ export default function ProtectedRoute({
       };
       
       const redirectTo = redirectMap[user.role as UserRole] || '/';
-      console.log(`Redirecting to: ${redirectTo}`);
       router.push(redirectTo);
     }
   }, [user, user?.role, isPending, requiredRole, router]);
