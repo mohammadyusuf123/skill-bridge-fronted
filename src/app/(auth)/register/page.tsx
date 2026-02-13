@@ -44,6 +44,7 @@ export default function RegisterPage() {
         email: data.email,
         password: data.password,
         name: data.name,
+        status: "ACTIVE",
         callbackURL: '/dashboard',
       };
 
@@ -54,13 +55,14 @@ export default function RegisterPage() {
       else {
         payload.role = 'STUDENT';
       }
+      console.log(payload);
      const res = await signUp.email(payload);
-
+     console.log(res);
       if (res.error) {
         toast.error('Failed to create account');
       }
 
-      if (res.data?.token) {
+      if (res?.data.user?.id) {
         toast.success('Account created successfully!');
         router.push('/dashboard');
       }
