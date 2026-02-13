@@ -122,12 +122,12 @@ export default function LoginPage() {
                     <Label htmlFor="password" className="text-sm font-medium">
                       Password
                     </Label>
-                    <Link
+                    {/* <Link
                       href="/forgot-password"
                       className="text-sm text-primary hover:underline font-medium"
                     >
                       Forgot password?
-                    </Link>
+                    </Link> */}
                   </div>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -148,7 +148,7 @@ export default function LoginPage() {
                 </div>
 
                 {/* Remember Me */}
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                   <Checkbox
                     id="remember"
                     checked={rememberMe}
@@ -161,7 +161,7 @@ export default function LoginPage() {
                   >
                     Remember me for 30 days
                   </label>
-                </div>
+                </div> */}
 
                 {/* Submit Button */}
                 <Button 
@@ -183,7 +183,7 @@ export default function LoginPage() {
                 </Button>
 
                 {/* Divider */}
-                <div className="relative my-6">
+                {/* <div className="relative my-6">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
                   </div>
@@ -192,10 +192,10 @@ export default function LoginPage() {
                       Or continue with
                     </span>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Social Login Buttons */}
-                <div className="grid grid-cols-2 gap-3">
+                {/* <div className="grid grid-cols-2 gap-3">
                   <Button
                     type="button"
                     variant="outline"
@@ -233,7 +233,7 @@ export default function LoginPage() {
                     </svg>
                     GitHub
                   </Button>
-                </div>
+                </div> */}
               </form>
 
               {/* Sign Up Link */}
