@@ -55,9 +55,7 @@ export default function RegisterPage() {
       else {
         payload.role = 'STUDENT';
       }
-      console.log(payload);
      const res = await signUp.email(payload);
-     console.log(res);
       if (res.error) {
         toast.error('Failed to create account');
       }

@@ -160,7 +160,7 @@ export function useCancelBooking() {
 
 export function useCompleteBooking() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: ({ bookingId, tutorNotes }: { bookingId: string; tutorNotes?: string }) =>
       bookingApi.markAsComplete(bookingId, tutorNotes),
@@ -169,11 +169,19 @@ export function useCompleteBooking() {
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       toast.success('Booking marked as complete!');
     },
-    onError: () => {
-      toast.error('Failed to complete booking');
+    onError: (error: any) => {
+      console.error('Complete Booking Error:', error);
+
+      // Axios error has response.data.message
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to complete booking';
+      toast.error(message);
     },
   });
 }
+
 
 export function useBookingStats() {
   return useQuery({
